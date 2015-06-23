@@ -17,27 +17,21 @@ jQuery(document).ready(function()
 
     // Load a db from a file
     fileInput.addEventListener('change', function(e) {
-			var file = fileInput.files[0];
-            var fileDisplayArea = document.getElementById('table');
-				var reader = new FileReader();              
-				reader.onload = function(e) {
-		    		var Uints = new Uint8Array(reader.result);
-                    var db = new SQL.Database(Uints);
-                    var contents = db.exec("SELECT Locus FROM clusters");
-                    console.log(contents);
-                    console.log("inside");
-                    fileDisplayArea.innerText = contents[0]['values'];
-	
-				}
-
-		        reader.readAsArrayBuffer(file);
-				// Prepare a statement
-                
-			
-		});
-		
+        var file = fileInput.files[0];
+        var fileDisplayArea = document.getElementById('table');
+        var reader = new FileReader();              
+        reader.onload = function(e) {
+           var Uints = new Uint8Array(reader.result);
+           var db = new SQL.Database(Uints);
+           var contents = db.exec("SELECT Locus FROM clusters");
+           console.log(contents);
+           fileDisplayArea.innerText = contents[0]['values'];
     
-    
+        }
+        reader.readAsArrayBuffer(file);
+       // Prepare a statement
+            
+        });
    
 });
 
