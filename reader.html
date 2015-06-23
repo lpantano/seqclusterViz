@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html>
+<head><meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>clusters information</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+
+<script type="text/javascript"  src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+<script type="text/javascript"  src="jquery.tablesorter.min.js"></script>
+<script src="read.js"></script>
+<script src='js/sql.js'></script>
+<script>
+
+
+jQuery(document).ready(function() 
+{
+    
+    var fileInput = document.getElementById('files');
+
+    // Load a db from a file
+    fileInput.addEventListener('change', function(e) {
+			var file = fileInput.files[0];
+            var fileDisplayArea = document.getElementById('table');
+				var reader = new FileReader();              
+				reader.onload = function(e) {
+		    		var Uints = new Uint8Array(reader.result);
+                    var db = new SQL.Database(Uints);
+                    var contents = db.exec("SELECT Locus FROM clusters");
+                    console.log(contents);
+                    console.log("inside");
+                    fileDisplayArea.innerText = contents[0]['values'];
+	
+				}
+
+		        reader.readAsArrayBuffer(file);
+				// Prepare a statement
+                
+			
+		});
+		
+    
+    
+   
+});
+
+
+</script>
+
+</head>
+<body id="main">
+
+
+<input type="file" id="files" name="files[]" />
+
+<div id="table">
+    <h4>Table with clusters</h4><br>
+</div>
+</html>
