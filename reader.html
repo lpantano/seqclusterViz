@@ -80,11 +80,11 @@ jQuery(document).ready(function()
                checkbox.value = entry;
                checkbox.id = entry;
 
-               var lab = document.createElement('label')
+               var lab = document.createElement('label');
                lab.htmlFor = entry;
                lab.appendChild(document.createTextNode(entry));
 
-               var label = document.createElement('label')
+               var label = document.createElement('label');
                label.htmlFor = entry;
                label.appendChild(document.createTextNode(cts[0]['values']));
 
@@ -142,7 +142,7 @@ function filter (term, _id, cellNr){
 	
 	
 function myFuncShowLocus() {
-    var tbl = document.getElementById("demo");
+    var tblDisplay = document.getElementById("myTableLocus");
     var fileInput = document.getElementById('files');
 	
 	var file = fileInput.files[0];
@@ -155,28 +155,68 @@ function myFuncShowLocus() {
        var contents = db.exec("SELECT Id FROM clusters");
        console.log(contents);
 		
-	   var i = -1;
+	   var c = -1;
        contents[0]['values'].sort().forEach(function(entry) {
 		  if (document.getElementById(entry).checked) {
-            i = entry;
+            c = entry;
 			document.getElementById(entry).checked = false;
           }
 	   });
 		
-	   if (i > -1) {
-	      document.getElementById(i).checked = true;
+	   if (c > -1) {
+	      document.getElementById(c).checked = true;
 		   
-	      var str = "SELECT Locus FROM clusters WHERE Id=" + i;	
+	      var str = "SELECT Locus FROM clusters WHERE Id=" + c;	
           var cts = db.exec(str);
 	      console.log(cts);
 	    
 	      // esto para transformat el valor a variables
 	      locus_array = JSON.parse(cts[0]['values']);
           console.log(locus_array);
-          tbl.innerHTML = locus_array[0];
-		  	   
-	   } else {
-          tbl.innerHTML = "Select something...";
+		   
+		   
+		  //Deleting rows from table
+		  var rowCount = tblDisplay.rows.length;
+		  for (var x=rowCount-1; x>0; x--) {
+		     tblDisplay.deleteRow(x);
+		  }
+		   
+		  //Inserting new rows
+          var i = 1;
+          locus_array.forEach(function(entry) {
+               var row = tblDisplay.insertRow(i);
+               i++;
+
+               // Insert a new cell (<td>) at the first position of the "new" <tr> element:
+               var cell0 = row.insertCell(0);
+               var cell1 = row.insertCell(1);
+               var cell2 = row.insertCell(2);
+
+			  
+               var lab0 = document.createElement('label');
+               lab0.htmlFor = entry;
+               lab0.appendChild(document.createTextNode(c));
+
+               var lab1 = document.createElement('label');
+               lab1.htmlFor = entry;
+               lab1.appendChild(document.createTextNode(i-2));
+
+               var lab2 = document.createElement('label');
+               lab2.htmlFor = entry;
+               lab2.appendChild(document.createTextNode(entry));
+
+               cell0.appendChild(lab0);
+               cell1.appendChild(lab1);
+               cell2.appendChild(lab2);
+		   
+		   
+		  }); 
+		   
+		   
+		   
+		   
+		   
+		   
 	   }
 		
 		
@@ -232,11 +272,8 @@ function myFuncShowLocus() {
 <table style="width:80%" align="center" id="myTableLocus">
   <tr>
     <td>I.D.</td>		
+    <td>Index</td>		
     <td>Locus:</td>
-  </tr>
-  <tr>
-    <td>X</td>		
-    <td><p id="demo"></p></td>
   </tr>
 	
 	
