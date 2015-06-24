@@ -1,5 +1,16 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"><html>
-<head><meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<head>
+<style>
+table, th, td {
+    border: 1px solid black;
+    padding: 5px;
+}
+table {
+    border-spacing: 5px;
+}
+</style>
+
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>clusters information</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 
@@ -19,13 +30,74 @@ jQuery(document).ready(function()
     fileInput.addEventListener('change', function(e) {
         var file = fileInput.files[0];
         var fileDisplayArea = document.getElementById('table');
-        var reader = new FileReader();              
+		fileDisplayArea.innerText = ""
+        var tableDisplayArea = document.getElementById("myTable");
+		var reader = new FileReader();              
         reader.onload = function(e) {
            var Uints = new Uint8Array(reader.result);
            var db = new SQL.Database(Uints);
-           var contents = db.exec("SELECT Locus FROM clusters");
+//           var contents = db.exec("SELECT Id, Locus FROM clusters WHERE Id=1");
+//           var contents = db.exec("SELECT * FROM clusters WHERE Id=1");
+//		   var str = "SELECT * FROM clusters WHERE Id=" + 3;	
+//           var contents = db.exec(str);
+//           var contents = db.exec("SELECT Id, Annotation FROM clusters");
+           var contents = db.exec("SELECT Id FROM clusters");
            console.log(contents);
-           fileDisplayArea.innerText = contents[0]['values'];
+			
+
+           // Create an empty <thead> element and add it to the table:
+           //var header = tableDisplayArea.createTHead();
+
+           var i = 1;
+		   contents[0]['values'].sort().forEach(function(entry) {
+			   var str = "SELECT Annotation FROM clusters WHERE Id=" + entry;	
+    	       var cts = db.exec(str);
+			   console.log(entry);
+               //fileDisplayArea.innerText = fileDisplayArea.innerText + entry + " > " + cts[0]['values'] + "\n";
+			   
+               //fileDisplayArea.innerText = fileDisplayArea.innerText + i + "\n";
+			   
+			   
+			   
+               // Create an empty <tr> element and add it to the first position of <thead>:
+               var row = tableDisplayArea.insertRow(i);
+               i++;
+
+               // Insert a new cell (<td>) at the first position of the "new" <tr> element:
+               var cell0 = row.insertCell(0);
+               var cell1 = row.insertCell(1);
+               var cell2 = row.insertCell(2);
+
+               // Add some bold text in the new cell:
+               //cell.innerHTML = "<b>This is a table header</b>";			   
+			   
+			   
+               var checkbox = document.createElement('input');
+               checkbox.type = "checkbox";
+               checkbox.name = entry;
+               checkbox.value = entry;
+               checkbox.id = entry;
+
+               var lab = document.createElement('label')
+               lab.htmlFor = entry;
+               lab.appendChild(document.createTextNode(entry));
+
+               var label = document.createElement('label')
+               label.htmlFor = entry;
+               label.appendChild(document.createTextNode(cts[0]['values']));
+
+               cell0.appendChild(checkbox);
+               cell1.appendChild(lab);
+               cell2.appendChild(label);
+			   
+			   
+			   
+			   
+			   
+			   
+			   
+  		   });
+//           fileDisplayArea.innerText = contents[0]['values'];
     
         }
         reader.readAsArrayBuffer(file);
@@ -44,7 +116,13 @@ jQuery(document).ready(function()
 
 <input type="file" id="files" name="files[]" />
 
-<div id="table">
-    <h4>Table with clusters</h4><br>
-</div>
+<h4>Table with clusters</h4><br>
+<div id="table"></div>
+<table style="width:80%" align="center" id="myTable">
+  <tr>
+    <td></td>
+    <td>I.D.</td>		
+    <td>Description:</td>
+  </tr>
+</table>
 </html>
