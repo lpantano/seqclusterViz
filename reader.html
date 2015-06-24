@@ -156,7 +156,7 @@ function myFuncShowLocus() {
        var cts = db.exec(str);
 	   console.log(cts);
 		   
-       tbl.innerHTML = cts;
+       tbl.innerHTML = cts[0]['values'];
     }
     reader1.readAsArrayBuffer(file);
     	
