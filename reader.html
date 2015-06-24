@@ -18,6 +18,8 @@ table {
 <script type="text/javascript"  src="jquery.tablesorter.min.js"></script>
 <script src="read.js"></script>
 <script src='js/sql.js'></script>
+
+
 <script>
 
 
@@ -99,6 +101,12 @@ jQuery(document).ready(function()
   		   });
 //           fileDisplayArea.innerText = contents[0]['values'];
     
+			
+			
+			
+			
+			
+			
         }
         reader.readAsArrayBuffer(file);
        // Prepare a statement
@@ -107,6 +115,25 @@ jQuery(document).ready(function()
    
 });
 
+	
+	
+	
+	
+	
+	
+	
+function filter (term, _id, cellNr){
+	var suche = term.value.toLowerCase();
+	var table = document.getElementById(_id);
+	var ele;
+	for (var r = 1; r < table.rows.length; r++){
+		ele = table.rows[r].cells[cellNr].innerHTML.replace(/<[^>]+>/g,"");
+		if (ele.toLowerCase().indexOf(suche)>=0 )
+			table.rows[r].style.display = '';
+		else table.rows[r].style.display = 'none';
+	}
+}	
+	
 
 </script>
 
@@ -116,6 +143,8 @@ jQuery(document).ready(function()
 
 <input type="file" id="files" name="files[]" />
 
+<input name="filter" onkeyup="filter(this, 'myTable', 2)" type="text">	
+	
 <h4>Table with clusters</h4><br>
 <div id="table"></div>
 <table style="width:80%" align="center" id="myTable">
@@ -125,4 +154,15 @@ jQuery(document).ready(function()
     <td>Description:</td>
   </tr>
 </table>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </html>
