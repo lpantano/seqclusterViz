@@ -152,13 +152,45 @@ function myFuncShowLocus() {
        var Uints = new Uint8Array(reader1.result);
        var db = new SQL.Database(Uints);
 
-	   var str = "SELECT Locus FROM clusters WHERE Id=" + 3;	
-       var cts = db.exec(str);
-	   console.log(cts);
+       var contents = db.exec("SELECT Id FROM clusters");
+       console.log(contents);
+		
+	   var i = -1;
+       contents[0]['values'].sort().forEach(function(entry) {
+		  if (document.getElementById(entry).checked) {
+            i = entry;
+			document.getElementById(entry).checked = false;
+          }
+	   });
+		
+	   if (i > -1) {
+	      document.getElementById(i).checked = true;
+		   
+	      var str = "SELECT Locus FROM clusters WHERE Id=" + i;	
+          var cts = db.exec(str);
+	      console.log(cts);
 	    
-	   // esto para transformat el valor a variables
-	   locus_array = JSON.parse(cts[0]['values']);
-       tbl.innerHTML = locus_array[0];
+	      // esto para transformat el valor a variables
+	      locus_array = JSON.parse(cts[0]['values']);
+          console.log(locus_array);
+          tbl.innerHTML = locus_array[0];
+		  	   
+	   } else {
+          tbl.innerHTML = "Select something...";
+	   }
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
     }
     reader1.readAsArrayBuffer(file);
     	
