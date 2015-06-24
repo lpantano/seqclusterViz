@@ -143,6 +143,7 @@ function filter (term, _id, cellNr){
 	
 function myFuncShowLocus() {
     var tblDisplay = document.getElementById("myTableLocus");
+    var tblSDisplay = document.getElementById("myTableSeqs");
     var fileInput = document.getElementById('files');
 	
 	var file = fileInput.files[0];
@@ -217,6 +218,61 @@ function myFuncShowLocus() {
 		  }); 
 		   
 		   
+		  ///////////////////////////////////////////////////////////////
+	      var str = "SELECT Sequences FROM clusters WHERE Id=" + c;	
+          var cts = db.exec(str);
+	      console.log(cts);
+	    
+	      // esto para transformat el valor a variables
+	      locus_array = JSON.parse(cts[0]['values']);
+          console.log(locus_array);
+		   
+		   
+		  //Deleting rows from table
+		  var rowCount = tblSDisplay.rows.length;
+		  for (var x=rowCount-1; x>0; x--) {
+		     tblSDisplay.deleteRow(x);
+		  }
+		   
+		  //Inserting new rows
+          var i = 1;
+          locus_array.forEach(function(entry) {
+               var row = tblSDisplay.insertRow(i);
+               i++;
+
+               // Insert a new cell (<td>) at the first position of the "new" <tr> element:
+               var cell0 = row.insertCell(0);
+               var cell1 = row.insertCell(1);
+               var cell2 = row.insertCell(2);
+
+			  
+               var lab0 = document.createElement('label');
+               lab0.htmlFor = i;
+               lab0.appendChild(document.createTextNode(c));
+
+               var lab1 = document.createElement('label');
+               lab1.htmlFor = i;
+               lab1.appendChild(document.createTextNode(i-2));
+
+			  
+			   var entr  = String(entry);
+			   var entr0 = entr.split(" ");
+			   var entr1 = entr0[1];
+               var lab2 = document.createElement('label');
+               lab2.htmlFor = i;
+               lab2.appendChild(document.createTextNode(entr1));
+
+               cell0.appendChild(lab0);
+               cell1.appendChild(lab1);
+               cell2.appendChild(lab2);
+		   
+		   
+		  }); 
+		   
+		   
+		   
+		   
+		   
 		   
 		   
 		   
@@ -279,11 +335,21 @@ function myFuncShowLocus() {
     <td>Index</td>		
     <td>Locus:</td>
   </tr>
-	
-	
-	
-	
 </table>
+	
+	
+	
+	
+<h4>Table with Seqs</h4>
+<br>
+<table style="width:80%" align="center" id="myTableSeqs">
+  <tr>
+    <td>I.D.</td>		
+    <td>Index</td>		
+    <td>Seqs:</td>
+  </tr>
+</table>
+	
 	
 	
 	
