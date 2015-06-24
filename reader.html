@@ -155,8 +155,10 @@ function myFuncShowLocus() {
 	   var str = "SELECT Locus FROM clusters WHERE Id=" + 3;	
        var cts = db.exec(str);
 	   console.log(cts);
-		   
-       tbl.innerHTML = cts[0]['values'];
+	    
+	   // esto para transformat el valor a variables
+	   locus_array = JSON.parse(cts[0]['values']);
+       tbl.innerHTML = locus_array[0];
     }
     reader1.readAsArrayBuffer(file);
     	
