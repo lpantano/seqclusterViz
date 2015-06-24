@@ -135,6 +135,40 @@ function filter (term, _id, cellNr){
 }	
 	
 
+	
+	
+	
+	
+	
+	
+function myFuncShowLocus() {
+    var tbl = document.getElementById("demo");
+    var fileInput = document.getElementById('files');
+	
+	var file = fileInput.files[0];
+    console.log(file);
+	var reader1 = new FileReader();              
+    reader1.onload = function(e) {
+       var Uints = new Uint8Array(reader1.result);
+       var db = new SQL.Database(Uints);
+
+	   var str = "SELECT Locus FROM clusters WHERE Id=" + 3;	
+       var cts = db.exec(str);
+	   console.log(cts);
+		   
+       tbl.innerHTML = cts;
+    }
+    reader1.readAsArrayBuffer(file);
+    	
+
+
+
+}	
+	
+	
+	
+	
+	
 </script>
 
 </head>
@@ -145,7 +179,8 @@ function filter (term, _id, cellNr){
 
 <input name="filter" onkeyup="filter(this, 'myTable', 2)" type="text">	
 	
-<h4>Table with clusters</h4><br>
+<h4>Table with clusters</h4>
+<br>
 <div id="table"></div>
 <table style="width:80%" align="center" id="myTable">
   <tr>
@@ -155,6 +190,25 @@ function filter (term, _id, cellNr){
   </tr>
 </table>
 	
+	
+<h4>Table with Locus</h4>
+<br>
+<button onclick="myFuncShowLocus()">Show Locus</button>
+<br>
+<table style="width:80%" align="center" id="myTableLocus">
+  <tr>
+    <td>I.D.</td>		
+    <td>Locus:</td>
+  </tr>
+  <tr>
+    <td>X</td>		
+    <td><p id="demo"></p></td>
+  </tr>
+	
+	
+	
+	
+</table>
 	
 	
 	
