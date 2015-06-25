@@ -260,16 +260,31 @@ function myFuncShowLocus() {
                cell0.appendChild(lab0);
                cell1.appendChild(lab1);
                cell2.appendChild(lab2);
+
+		   
+		   
+		   var arrKeys = [];
+   		   for (key in locus_array[0]['freq']) {
+				arrKeys.push(key);
+		   }
+		   arrKeys = arrKeys.sort();
+		   console.log(arrKeys);
+		   
+		   
+		   
+		   
+		   
+		   
 		   
 		   
 		   var k = 0;
-		   for (key in locus_array[0]['freq']) {
+		   for (var key in arrKeys) {
 				  //console.log(locus_array[0]['freq'][key])
                   var cell = row.insertCell(k+3);
 				  
                   var label = document.createElement('label');
                   label.htmlFor = i;
-                  label.appendChild(document.createTextNode(key));
+                  label.appendChild(document.createTextNode(arrKeys[key]));
 				  
                   cell.appendChild(label);
 				  
@@ -307,13 +322,13 @@ function myFuncShowLocus() {
                cell2.appendChild(lab2);
 		   
 			  var k = 0;
-			  for (key in entry['freq']) {
+			  for (var key in arrKeys) {
 				  //console.log(entry['freq'][key])
                   var cell = row.insertCell(k+3);
 				  
                   var label = document.createElement('label');
                   label.htmlFor = i;
-                  label.appendChild(document.createTextNode(Math.round(entry['freq'][key]*100)/100));
+                  label.appendChild(document.createTextNode(Math.round(entry['freq'][arrKeys[key]]*100)/100));
 				  
                   cell.appendChild(label);
 				  
