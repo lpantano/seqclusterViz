@@ -230,9 +230,52 @@ function myFuncShowLocus() {
 		   
 		  //Deleting rows from table
 		  var rowCount = tblSDisplay.rows.length;
-		  for (var x=rowCount-1; x>0; x--) {
+		  for (var x=rowCount-1; x>=0; x--) {
 		     tblSDisplay.deleteRow(x);
 		  }
+		   
+		   
+		   
+		   //Insert headers
+           var row = tblSDisplay.insertRow(0);
+		   
+               var cell0 = row.insertCell(0);
+               var cell1 = row.insertCell(1);
+               var cell2 = row.insertCell(2);
+
+			  
+               var lab0 = document.createElement('label');
+               lab0.htmlFor = i;
+               lab0.appendChild(document.createTextNode('I.D'));
+
+               var lab1 = document.createElement('label');
+               lab1.htmlFor = i;
+               lab1.appendChild(document.createTextNode('Index'));
+
+			  
+               var lab2 = document.createElement('label');
+               lab2.htmlFor = i;
+               lab2.appendChild(document.createTextNode('Seqs.'));
+
+               cell0.appendChild(lab0);
+               cell1.appendChild(lab1);
+               cell2.appendChild(lab2);
+		   
+		   
+		   var k = 0;
+		   for (key in locus_array[0]['freq']) {
+				  //console.log(locus_array[0]['freq'][key])
+                  var cell = row.insertCell(k+3);
+				  
+                  var label = document.createElement('label');
+                  label.htmlFor = i;
+                  label.appendChild(document.createTextNode(key));
+				  
+                  cell.appendChild(label);
+				  
+				  k++;
+			  }
+		   
 		   
 		  //Inserting new rows
           var i = 1;
@@ -255,17 +298,38 @@ function myFuncShowLocus() {
                lab1.appendChild(document.createTextNode(i-2));
 
 			  
-			   var entr  = String(entry);
-			   var entr0 = entr.split(" ");
-			   var entr1 = entr0[1];
                var lab2 = document.createElement('label');
                lab2.htmlFor = i;
-               lab2.appendChild(document.createTextNode(entr1));
+               lab2.appendChild(document.createTextNode(entry['name']));
 
                cell0.appendChild(lab0);
                cell1.appendChild(lab1);
                cell2.appendChild(lab2);
 		   
+			  var k = 0;
+			  for (key in entry['freq']) {
+				  //console.log(entry['freq'][key])
+                  var cell = row.insertCell(k+3);
+				  
+                  var label = document.createElement('label');
+                  label.htmlFor = i;
+                  label.appendChild(document.createTextNode(entry['freq'][key]));
+				  
+                  cell.appendChild(label);
+				  
+				  k++;
+			  }
+			  
+			  
+			  
+			  
+			  
+			  
+			  
+			  
+			  
+			  
+			  
 		   
 		  }); 
 		   
