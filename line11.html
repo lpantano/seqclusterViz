@@ -58,6 +58,13 @@
     	var dataSetA = oldData["datasets"][0]["data"];
     	var dataSetB = oldData["datasets"][1]["data"];
 
+		
+		while (labels.length > 0) {
+			labels.pop();
+    		dataSetA.pop();
+    		dataSetB.pop();
+		}
+		
 		for (var i = 0; i<10; i++) {
 			labels.push(i.toString());
     		dataSetA.push(randomScalingFactor());
