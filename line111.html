@@ -8,6 +8,7 @@
 		<button onclick="myFunction()">Plot it!!!</button>
 		<div style="width:30%">
 			<div>
+				<h2 class="title">Chart Title</h2>
 				<canvas id="canvas" height="450" width="600"></canvas>
 			</div>
 		</div>
@@ -45,7 +46,7 @@
 		updateData(lineChartData);
 		
 		var myLine = new Chart(ctx).Line(lineChartData, {
-			responsive: true,
+			//responsive: true,
     		pointDot : false
 		});
 	}
