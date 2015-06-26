@@ -168,6 +168,7 @@ function myFuncShowLocus() {
 	   if (c > -1) {
 	      document.getElementById(c).checked = true;
 		   
+		  ///////////////////////////////////////////////////////////////
 	      var str = "SELECT Locus FROM clusters WHERE Id=" + c;	
           var cts = db.exec(str);
 	      console.log(cts);
