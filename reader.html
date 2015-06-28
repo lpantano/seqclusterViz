@@ -13,12 +13,13 @@ table {
 
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>clusters information</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="bootstrap.min.css">
 
-<script type="text/javascript"  src="jquery-1.10.0.min.js"></script>
-<script type="text/javascript"  src="jquery.tablesorter.min.js"></script>
+<script src="jquery-1.10.0.min.js"></script>
+<script src="jquery.tablesorter.min.js"></script>
 <script src="read.js"></script>
 <script src='js/sql.js'></script>
+<script src="Chart.js"></script>
 
 
 <script>
@@ -386,6 +387,70 @@ function myFuncShowLocus() {
 	
 </script>
 
+	<script>
+		var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+		var lineChartData = {
+			labels : [],
+			datasets : [
+				{
+					label: "My First dataset",
+					fillColor : "rgba(220,220,220,0.2)",
+					strokeColor : "rgba(220,220,220,1)",
+					data : []
+				},
+				{
+					label: "My Second dataset",
+					fillColor : "rgba(151,187,205,0.2)",
+					strokeColor : "rgba(151,187,205,1)",
+					data : []
+				}
+			]
+
+		}
+
+		
+		
+
+		
+		
+	function myFunctionPlot(){
+		var ctx = document.getElementById("canvas").getContext("2d");
+		
+		updateData(lineChartData);
+		
+		var myLine = new Chart(ctx).Line(lineChartData, {
+			//responsive: true,
+    		pointDot : false
+		});
+	}
+		
+		
+	var updateData = function(oldData){
+    	var labels = oldData["labels"];
+    	var dataSetA = oldData["datasets"][0]["data"];
+    	var dataSetB = oldData["datasets"][1]["data"];
+
+		
+		while (labels.length > 0) {
+			labels.pop();
+    		dataSetA.pop();
+    		dataSetB.pop();
+		}
+		
+		for (var i = 0; i<10; i++) {
+			labels.push(i.toString());
+    		dataSetA.push(randomScalingFactor());
+    		dataSetB.push(randomScalingFactor());
+		}
+	};
+
+	
+		
+		
+		
+
+
+	</script>
 	
 	
 	
@@ -429,6 +494,11 @@ function myFuncShowLocus() {
 <br>
 
 	
+<button onclick="myFunctionPlot()">Plot it!!!</button>
+<h4 class="title">Chart Title</h4>
+<canvas id="canvas" height="300" width="80%" align="center"></canvas>
+<br>
+<br>
 	
 	
 	
