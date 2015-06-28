@@ -75,11 +75,11 @@ jQuery(document).ready(function()
                //cell.innerHTML = "<b>This is a table header</b>";			   
 			   
 			   
-               var checkbox = document.createElement('input');
-               checkbox.type = "checkbox";
-               checkbox.name = entry;
-               checkbox.value = entry;
-               checkbox.id = entry;
+               var radio = document.createElement('input');
+               radio.type = "radio";
+               radio.name = "radiog0";
+               radio.value = entry;
+               radio.id = entry;
 
                var lab = document.createElement('label');
                lab.htmlFor = entry;
@@ -89,7 +89,7 @@ jQuery(document).ready(function()
                label.htmlFor = entry;
                label.appendChild(document.createTextNode(cts[0]['values']));
 
-               cell0.appendChild(checkbox);
+               cell0.appendChild(radio);
                cell1.appendChild(lab);
                cell2.appendChild(label);
 			   
