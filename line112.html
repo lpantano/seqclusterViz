@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Line Chart</title>
+		<script src="./Chart.js"></script>
+	</head>
+	<body>
+		<button onclick="myFunction()">Plot it!!!</button>
+		<div style="width:30%">
+			<div>
+				<h2 class="title">Chart Title</h2>
+				<canvas id="canvas" height="450" width="600"></canvas>
+			</div>
+		</div>
+
+
+	<script>
+		var randomScalingFactor  = function(){ return Math.round(Math.random()*100)};
+		var lineChartData = {
+			labels : [],
+			datasets : [
+				{
+					label: "My First dataset",
+					fillColor : "rgba(151,187,205,0.2)",
+					strokeColor : "rgba(151,187,205,1)",
+					data : []
+				},
+				{
+					label: "My Second dataset",
+					fillColor : "rgba(151,187,205,0.2)",
+					strokeColor : "rgba(151,187,205,1)",
+					data : []
+				}
+			]
+
+		}
+
+		
+		
+
+		
+		
+	function myFunction(){
+		var ctx = document.getElementById("canvas").getContext("2d");
+		
+		updateData(lineChartData);
+		
+		var myLine = new Chart(ctx).Line(lineChartData, {
+			//responsive: true,
+    		pointDot : false
+		});
+	}
+		
+		
+	var updateData = function(oldData){
+ 		
+		while (oldData["labels"].length > 0) {
+			oldData["labels"].pop();
+		}
+		
+		for (var d = 0; d < oldData["datasets"].length; d++) {
+			while (oldData["datasets"][d]["data"].length > 0) {
+	    		oldData["datasets"][d]["data"].pop();
+			}
+		}
+		
+		
+		while (oldData["datasets"].length > 0) {
+	   		oldData["datasets"].pop();
+		}
+		
+		
+		
+		
+		
+		
+		for (var i = 0; i<10; i++) {
+			oldData["labels"].push(i.toString());
+		}
+		
+		for (var d = 0; d < 3; d++) {
+	   		oldData["datasets"].push(
+				{
+					label: "My dataset",
+					fillColor : "rgba(151,187,205,0.1)",
+					strokeColor : "rgba(151,187,205,0.5)",
+					data : []
+				}
+			);
+			
+			
+			for (var i = 0; i<10; i++) {
+    			oldData["datasets"][d]["data"].push(randomScalingFactor());
+			}
+			
+		}
+		
+		
+		
+	};
+
+	
+		
+		
+		
+
+
+	</script>
+	</body>
+</html>
