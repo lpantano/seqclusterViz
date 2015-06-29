@@ -25,6 +25,8 @@ table {
 <script>
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 jQuery(document).ready(function() 
 		{
 
@@ -115,7 +117,7 @@ jQuery(document).ready(function()
 
 		});
 
-		});
+});
 
 
 
@@ -123,7 +125,8 @@ jQuery(document).ready(function()
 
 
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 function filter (term, _id, cellNr){
 	var suche = term.value.toLowerCase();
 	var table = document.getElementById(_id);
@@ -143,6 +146,8 @@ function filter (term, _id, cellNr){
 
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 function myFuncShowLocus() {
 	var tblDisplay = document.getElementById("myTableLocus");
 	var tblSDisplay = document.getElementById("myTableSeqs");
@@ -219,6 +224,26 @@ function myFuncShowLocus() {
 
 
 			}); 
+
+
+			///////////////////////////////////////////////////////////////
+			var str = "SELECT Profile FROM clusters WHERE Id=" + c;	
+			var cts = db.exec(str);
+			console.log(cts);
+
+			// esto para transformat el valor a variables
+			profile_array = JSON.parse(cts[0]['values']);
+			console.log(profile_array);
+			
+			var profile_names = profile_array['names'];
+			var profile_x     = profile_array['x'];
+			var profile_ys    = profile_array['y'];
+			//console.log(profile_ys[0]);
+			
+			
+			myFunctionPlot(profile_x, profile_ys);
+
+
 
 
 			///////////////////////////////////////////////////////////////
@@ -358,12 +383,6 @@ function myFuncShowLocus() {
 
 
 
-
-
-</script>
-
-<script>
-var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
 var lineChartData = {
 	labels : [],
 	datasets : [
@@ -388,10 +407,10 @@ var lineChartData = {
 
 
 
-function myFunctionPlot(){
+function myFunctionPlot(newX, newYs){
 	var ctx = document.getElementById("canvas").getContext("2d");
 
-	updateData(lineChartData);
+	updateData(lineChartData, newX, newYs);
 
 	var myLine = new Chart(ctx).Line(lineChartData, {
 		//responsive: true,
@@ -400,7 +419,7 @@ function myFunctionPlot(){
 }
 
 
-	var updateData = function(oldData){
+	var updateData = function(oldData, newX, newYs){
  		
 		while (oldData["labels"].length > 0) {
 			oldData["labels"].pop();
@@ -422,11 +441,11 @@ function myFunctionPlot(){
 		
 		
 		
-		for (var i = 0; i<10; i++) {
-			oldData["labels"].push(i.toString());
+		for (var i = 0; i<newX.length; i++) {
+			oldData["labels"].push(newX[i]);
 		}
 		
-		for (var d = 0; d < 3; d++) {
+		for (var d = 0; d < newYs.length; d++) {
 	   		oldData["datasets"].push(
 				{
 					label: "My dataset",
@@ -437,8 +456,8 @@ function myFunctionPlot(){
 			);
 			
 			
-			for (var i = 0; i<10; i++) {
-    			oldData["datasets"][d]["data"].push(randomScalingFactor());
+			for (var i = 0; i<newYs[d].length; i++) {
+    			oldData["datasets"][d]["data"].push(newYs[d][i]);
 			}
 			
 		}
@@ -497,7 +516,6 @@ function myFunctionPlot(){
 <br>
 
 
-<button onclick="myFunctionPlot()">Plot it!!!</button>
 <h4 class="title">Chart Title</h4>
 <canvas id="canvas" height="300" width="600" align="center"></canvas>
 <br>
