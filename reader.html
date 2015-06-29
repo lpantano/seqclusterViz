@@ -455,15 +455,20 @@ var newNames;
 var newX;
 var newYs;
 
-
+var myLine=null;
 
 
 function myFunctionPlot(){
+	if(myLine!=null){
+        myLine.destroy();
+    }
+	
+	
 	var ctx = document.getElementById("canvas").getContext("2d");
 
 	updateData(lineChartData, newX, newYs);
 
-	var myLine = new Chart(ctx).Line(lineChartData, {
+	myLine = new Chart(ctx).Line(lineChartData, {
 		//responsive: true,
 		pointDot : false
 	});
