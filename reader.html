@@ -151,10 +151,13 @@ function filter (term, _id, cellNr){
 function myFuncShowLocus() {
 	var tblDisplay = document.getElementById("myTableLocus");
 	var tblSDisplay = document.getElementById("myTableSeqs");
+	var tblPDisplay = document.getElementById("myTablePlots");
+
 	var fileInput = document.getElementById('files');
 
 	var file = fileInput.files[0];
 	console.log(file);
+	
 	var reader1 = new FileReader();              
 	reader1.onload = function(e) {
 		var Uints = new Uint8Array(reader1.result);
@@ -235,15 +238,58 @@ function myFuncShowLocus() {
 			profile_array = JSON.parse(cts[0]['values']);
 			console.log(profile_array);
 			
-			var profile_names = profile_array['names'];
-			var profile_x     = profile_array['x'];
-			var profile_ys    = profile_array['y'];
+			//Global Variables
+			newNames = profile_array['names'];
+			newX     = profile_array['x'];
+			newYs    = profile_array['y'];
 			//console.log(profile_ys[0]);
 			
+			var profile_namess = newNames.sort();
 			
-			myFunctionPlot(profile_x, profile_ys);
+			
+			//Deleting rows from table
+			var rowCount = tblPDisplay.rows.length;
+			for (var x=rowCount-1; x>=0; x--) {
+				tblPDisplay.deleteRow(x);
+			}
+
+			
+			var row = tblPDisplay.insertRow(0);
+			
+			
+			for (var i = 0; i<profile_namess.length; i++) {
+				var cell0 = row.insertCell(i);
+				
+				var check = document.createElement('input');
+				check.type  = "checkbox";
+				check.name  = profile_namess[i];
+				check.value = profile_namess[i];
+				check.id    = profile_namess[i];
+				check.checked = true;
+
+				cell0.appendChild(check);
+			}
+			
+			var row = tblPDisplay.insertRow(0);
+			
+			
+			for (var i = 0; i<profile_namess.length; i++) {
+				var cell0 = row.insertCell(i);
+				
+				var label = document.createElement('label');
+				label.htmlFor = profile_namess[i];
+				label.appendChild(document.createTextNode(profile_namess[i]));
 
 
+				cell0.appendChild(label);
+			}
+			
+			
+			
+			myFunctionPlot();
+		
+			
+			
 
 
 			///////////////////////////////////////////////////////////////
@@ -405,23 +451,26 @@ var lineChartData = {
 }
 
 
+var newNames;
+var newX;
+var newYs;
 
 
 
 
-function myFunctionPlot(newX, newYs){
+function myFunctionPlot(){
 	var ctx = document.getElementById("canvas").getContext("2d");
 
 	updateData(lineChartData, newX, newYs);
 
 	var myLine = new Chart(ctx).Line(lineChartData, {
-		//responsive: true,
+		responsive: true,
 		pointDot : false
 	});
 }
 
 
-var updateData = function(oldData, newX, newYs){
+var updateData = function(oldData){
  		
 		while (oldData["labels"].length > 0) {
 			oldData["labels"].pop();
@@ -444,6 +493,8 @@ var updateData = function(oldData, newX, newYs){
 		}
 		
 		for (var d = 0; d < newYs.length; d++) {
+			var id = newNames[d];
+			
 	   		oldData["datasets"].push(
 				{
 					label: "My dataset",
@@ -453,13 +504,14 @@ var updateData = function(oldData, newX, newYs){
 				}
 			);
 			
-			
-			for (var i = 0; i<newYs[d].length; i++) {
-    			oldData["datasets"][d]["data"].push(newYs[d][i]);
+			if (document.getElementById(id).checked) {
+				for (var i = 0; i<newYs[d].length; i++) {
+    				oldData["datasets"][d]["data"].push(newYs[d][i]);
+				}
 			}
 			
+			
 		}
-		
 		
 		
 };
@@ -517,10 +569,17 @@ var updateData = function(oldData, newX, newYs){
 <h4 class="title">Chart Title</h4>
 <canvas id="canvas" height="300" width="600" align="center"></canvas>
 <br>
+<h4 class="title">Chart Legend</h4>
+<table style="width:80%" align="center" id="myTablePlots"></table>
+<br>
+<button onclick="myFunctionPlot()">Update Plot!!!</button>
+<br>
 <br>
 
 
 
+<h4 class="title">Seqs. Filter:</h4>
+<br>
 <input name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text">	
 
 <br>
