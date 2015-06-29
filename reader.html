@@ -383,6 +383,8 @@ function myFuncShowLocus() {
 
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 var lineChartData = {
 	labels : [],
 	datasets : [
@@ -419,7 +421,7 @@ function myFunctionPlot(newX, newYs){
 }
 
 
-	var updateData = function(oldData, newX, newYs){
+var updateData = function(oldData, newX, newYs){
  		
 		while (oldData["labels"].length > 0) {
 			oldData["labels"].pop();
@@ -435,10 +437,6 @@ function myFunctionPlot(newX, newYs){
 		while (oldData["datasets"].length > 0) {
 	   		oldData["datasets"].pop();
 		}
-		
-		
-		
-		
 		
 		
 		for (var i = 0; i<newX.length; i++) {
@@ -464,7 +462,7 @@ function myFunctionPlot(newX, newYs){
 		
 		
 		
-	};
+};
 
 
 
