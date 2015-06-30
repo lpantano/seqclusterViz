@@ -101,16 +101,13 @@ function ts_resortTable(lnk, clid) {
 		i++;
 	}
 	if (itm == "") return; 
-	//sortfn = ts_sort_numeric;
-	//sortfn = ts_sort_caseinsensitive;
-	//if (itm.match(/^\d\d[\/\.-][a-zA-z][a-zA-Z][a-zA-Z][\/\.-]\d\d\d\d$/)) sortfn = ts_sort_date;
-	//if (itm.match(/^\d\d[\/\.-]\d\d[\/\.-]\d\d\d{2}?$/)) sortfn = ts_sort_date;
-	//if (itm.match(/^-?[£$€Û¢´]\d/)) sortfn = ts_sort_numeric;
-	//if (itm.match(/^-?(\d+[,\.]?)+(E[-+][\d]+)?%?$/)) sortfn = ts_sort_numeric;
-	//console.log(itm);
-	//console.log(itm.match(/[0-9]+(\.[0-9][0-9]?)?/));
-	if (itm.match(/[0-9]+(\.[0-9][0-9]?)?/)) sortfn = ts_sort_numeric;
-	else sortfn = ts_sort_caseinsensitive;
+	sortfn = ts_sort_caseinsensitive;
+	if (itm.match(/^\d\d[\/\.-][a-zA-z][a-zA-Z][a-zA-Z][\/\.-]\d\d\d\d$/)) sortfn = ts_sort_date;
+	if (itm.match(/^\d\d[\/\.-]\d\d[\/\.-]\d\d\d{2}?$/)) sortfn = ts_sort_date;
+	if (itm.match(/^-?[£$€Û¢´]\d/)) sortfn = ts_sort_numeric;
+	if (itm.match(/^-?(\d+[,\.]?)+(E[-+][\d]+)?%?$/)) sortfn = ts_sort_numeric;
+	//if (itm.match(/[0-9]+(\.[0-9][0-9]?)?/)) sortfn = ts_sort_numeric;
+	//else sortfn = ts_sort_caseinsensitive;
 	
 	SORT_COLUMN_INDEX = column;
 	var firstRow = new Array();
