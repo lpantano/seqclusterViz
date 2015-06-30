@@ -260,6 +260,21 @@ function myFuncShowLocus() {
 			for (var i = 0; i<profile_namess.length; i++) {
 				var cell0 = row.insertCell(i);
 				
+				var label = document.createElement('label');
+				label.htmlFor = profile_namess[i];
+				label.appendChild(document.createTextNode(profile_namess[i]));
+
+
+				cell0.appendChild(label);
+			}
+			
+			
+			var row = tblPDisplay.insertRow(1);
+			
+			
+			for (var i = 0; i<profile_namess.length; i++) {
+				var cell0 = row.insertCell(i);
+				
 				var check = document.createElement('input');
 				check.type  = "checkbox";
 				check.name  = profile_namess[i];
@@ -270,20 +285,21 @@ function myFuncShowLocus() {
 				cell0.appendChild(check);
 			}
 			
-			var row = tblPDisplay.insertRow(0);
+			
+			var row = tblPDisplay.insertRow(2);
 			
 			
 			for (var i = 0; i<profile_namess.length; i++) {
 				var cell0 = row.insertCell(i);
 				
-				var label = document.createElement('label');
-				label.htmlFor = profile_namess[i];
-				label.appendChild(document.createTextNode(profile_namess[i]));
+				var color = document.createElement('input');
+				color.type  = "color";
+				color.name  = profile_namess[i];
+				color.value = "#00a2e8";
+				color.id    = "c" + profile_namess[i];
 
-
-				cell0.appendChild(label);
+				cell0.appendChild(color);
 			}
-			
 			
 			
 			myFunctionPlot();
