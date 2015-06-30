@@ -242,7 +242,9 @@ function myFuncShowLocus() {
 			newNames = profile_array['names'];
 			newX     = profile_array['x'];
 			newYs    = profile_array['y'];
-			//console.log(profile_ys[0]);
+			console.log(newYs);
+			console.log(newYs[newNames[6]]);
+			
 			
 			var profile_namess = newNames.sort();
 			
@@ -513,8 +515,8 @@ var updateData = function(oldData){
 			oldData["labels"].push(newX[i]);
 		}
 		
-		for (var d = 0; d < newYs.length; d++) {
-			var id = newNames[d];
+		for (var d = 0; d < newNames.length; d++) {
+			var id = newNames.sort()[d];
 			
 	   		oldData["datasets"].push(
 				{
@@ -526,8 +528,8 @@ var updateData = function(oldData){
 			);
 			
 			if (document.getElementById(id).checked) {
-				for (var i = 0; i<newYs[d].length; i++) {
-    				oldData["datasets"][d]["data"].push(newYs[d][i]);
+				for (var i = 0; i<newYs[id].length; i++) {
+    				oldData["datasets"][d]["data"].push(newYs[id][i]);
 				}
 			}
 			
@@ -542,7 +544,7 @@ var updateData = function(oldData){
 
 function myFunctionPlotSA(){
  		
-		for (var d = 0; d < newYs.length; d++) {
+		for (var d = 0; d < newNames.length; d++) {
 			var id = newNames[d];
 			
 			document.getElementById(id).checked = true;
@@ -553,7 +555,7 @@ function myFunctionPlotSA(){
 
 function myFunctionPlotUA(){
  		
-		for (var d = 0; d < newYs.length; d++) {
+		for (var d = 0; d < newNames.length; d++) {
 			var id = newNames[d];
 			
 			document.getElementById(id).checked = false;
