@@ -9,7 +9,7 @@ Version 1.5.7
 */
 
 /* You can change these values */
-var image_path = "http://www.joostdevalk.nl/code/sortable-table/";
+var image_path = "./";
 var image_up = "arrow-up.gif";
 var image_down = "arrow-down.gif";
 var image_none = "arrow-none.gif";
@@ -17,7 +17,7 @@ var europeandate = true;
 var alternate_row_colors = true;
 
 /* Don't change anything below this unless you know what you're doing */
-//addEvent(window, "load", sortables_init);
+addEvent(window, "load", sortables_init);
 
 var SORT_COLUMN_INDEX;
 var thead = false;
@@ -101,11 +101,12 @@ function ts_resortTable(lnk, clid) {
 		i++;
 	}
 	if (itm == "") return; 
-	sortfn = ts_sort_caseinsensitive;
-	if (itm.match(/^\d\d[\/\.-][a-zA-z][a-zA-Z][a-zA-Z][\/\.-]\d\d\d\d$/)) sortfn = ts_sort_date;
-	if (itm.match(/^\d\d[\/\.-]\d\d[\/\.-]\d\d\d{2}?$/)) sortfn = ts_sort_date;
-	if (itm.match(/^-?[£$€Û¢´]\d/)) sortfn = ts_sort_numeric;
-	if (itm.match(/^-?(\d+[,\.]?)+(E[-+][\d]+)?%?$/)) sortfn = ts_sort_numeric;
+	sortfn = ts_sort_numeric;
+	//sortfn = ts_sort_caseinsensitive;
+	//if (itm.match(/^\d\d[\/\.-][a-zA-z][a-zA-Z][a-zA-Z][\/\.-]\d\d\d\d$/)) sortfn = ts_sort_date;
+	//if (itm.match(/^\d\d[\/\.-]\d\d[\/\.-]\d\d\d{2}?$/)) sortfn = ts_sort_date;
+	//if (itm.match(/^-?[£$€Û¢´]\d/)) sortfn = ts_sort_numeric;
+	//if (itm.match(/^-?(\d+[,\.]?)+(E[-+][\d]+)?%?$/)) sortfn = ts_sort_numeric;
 	SORT_COLUMN_INDEX = column;
 	var firstRow = new Array();
 	var newRows = new Array();
