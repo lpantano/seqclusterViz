@@ -15,12 +15,12 @@ table {
 <title>clusters information</title>
 <link rel="stylesheet" href="bootstrap.min.css">
 
-<script src="jquery-1.10.0.min.js"></script>
-<script src="jquery.tablesorter.min.js"></script>
-<script src="read.js"></script>
-<script src='js/sql.js'></script>
-<script src="Chart.js"></script>
-
+<script type="text/javascript" src="jquery-1.10.0.min.js"></script>
+<script type="text/javascript" src="jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="read.js"></script>
+<script type="text/javascript" src='js/sql.js'></script>
+<script type="text/javascript" src="Chart.js"></script>
+<script type="text/javascript" src="sortable.js"></script>
 
 <script>
 
@@ -428,6 +428,7 @@ function myFuncShowLocus() {
 
 			}); 
 
+			sortables_init();
 
 		}
 
@@ -437,7 +438,6 @@ function myFuncShowLocus() {
 
 	}
 	reader1.readAsArrayBuffer(file);
-
 
 
 
@@ -630,7 +630,7 @@ function myFunctionPlotUA(){
 <input name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text">	
 
 <br>
-<table style="width:80%" align="center" id="myTableSeqs">
+<table style="width:80%" align="center" id="myTableSeqs" class="sortable">
 <tr>
 <td>I.D.</td>		
 <td>Index</td>		
