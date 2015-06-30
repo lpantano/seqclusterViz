@@ -17,7 +17,7 @@ var europeandate = true;
 var alternate_row_colors = true;
 
 /* Don't change anything below this unless you know what you're doing */
-addEvent(window, "load", sortables_init);
+//addEvent(window, "load", sortables_init);
 
 var SORT_COLUMN_INDEX;
 var thead = false;
@@ -91,7 +91,7 @@ function ts_resortTable(lnk, clid) {
 	// Work out a type for the column
 	if (t.rows.length <= 1) return;
 	var itm = "";
-	var i = 0;
+	var i = 1;
 	while (itm == "" && i < t.tBodies[0].rows.length) {
 		var itm = ts_getInnerText(t.tBodies[0].rows[i].cells[column]);
 		itm = trim(itm);
@@ -101,12 +101,17 @@ function ts_resortTable(lnk, clid) {
 		i++;
 	}
 	if (itm == "") return; 
-	sortfn = ts_sort_numeric;
+	//sortfn = ts_sort_numeric;
 	//sortfn = ts_sort_caseinsensitive;
 	//if (itm.match(/^\d\d[\/\.-][a-zA-z][a-zA-Z][a-zA-Z][\/\.-]\d\d\d\d$/)) sortfn = ts_sort_date;
 	//if (itm.match(/^\d\d[\/\.-]\d\d[\/\.-]\d\d\d{2}?$/)) sortfn = ts_sort_date;
 	//if (itm.match(/^-?[£$€Û¢´]\d/)) sortfn = ts_sort_numeric;
 	//if (itm.match(/^-?(\d+[,\.]?)+(E[-+][\d]+)?%?$/)) sortfn = ts_sort_numeric;
+	//console.log(itm);
+	//console.log(itm.match(/[0-9]+(\.[0-9][0-9]?)?/));
+	if (itm.match(/[0-9]+(\.[0-9][0-9]?)?/)) sortfn = ts_sort_numeric;
+	else sortfn = ts_sort_caseinsensitive;
+	
 	SORT_COLUMN_INDEX = column;
 	var firstRow = new Array();
 	var newRows = new Array();
