@@ -469,7 +469,7 @@ function myFunctionPlot(){
 	updateData(lineChartData, newX, newYs);
 
 	myLine = new Chart(ctx).Line(lineChartData, {
-		//responsive: true,
+		responsive: true,
 		pointDot : false
 	});
 }
@@ -521,6 +521,30 @@ var updateData = function(oldData){
 		
 };
 
+
+
+
+function myFunctionPlotSA(){
+ 		
+		for (var d = 0; d < newYs.length; d++) {
+			var id = newNames[d];
+			
+			document.getElementById(id).checked = true;
+		}
+		
+		
+}
+
+function myFunctionPlotUA(){
+ 		
+		for (var d = 0; d < newYs.length; d++) {
+			var id = newNames[d];
+			
+			document.getElementById(id).checked = false;
+		}
+		
+		
+}
 
 
 
@@ -578,6 +602,8 @@ var updateData = function(oldData){
 <table style="width:80%" align="center" id="myTablePlots"></table>
 <br>
 <button onclick="myFunctionPlot()">Update Plot!!!</button>
+<button onclick="myFunctionPlotSA()">Select All!!!</button>
+<button onclick="myFunctionPlotUA()">Unselect All!!!</button>
 <br>
 <br>
 
