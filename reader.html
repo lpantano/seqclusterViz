@@ -3,17 +3,19 @@
 <style>
 table, th, td {
 	border: 1px solid black;
-	padding: 5px;
+	padding: 0px;
 	text-align: center;
 }
 table {
-	border-spacing: 5px;
+	border-spacing: 0px;
 }
 </style>
 
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>clusters information</title>
+<!--
 <link rel="stylesheet" href="bootstrap.min.css">
+-->
 
 <script type="text/javascript" src="jquery-1.10.0.min.js"></script>
 <script type="text/javascript" src="jquery.tablesorter.min.js"></script>
@@ -581,6 +583,9 @@ function myFunctionPlotUA(){
 
 <input type="file" id="files" name="files[]" />
 
+<br>
+<br>
+<p class="title">Clusters Filter:</p>
 <input name="filter" onkeyup="filter(this, 'myTable', 2)" type="text">	
 
 <h4>Table with clusters</h4>
@@ -627,10 +632,9 @@ function myFunctionPlotUA(){
 
 
 
-<h4 class="title">Seqs. Filter:</h4>
-<br>
+<p class="title">Seqs. Filter:</p>
 <input name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text">	
-
+<br>
 <br>
 <table style="width:80%" align="center" id="myTableSeqs" class="sortable">
 <tr>
