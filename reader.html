@@ -98,11 +98,11 @@ jQuery(document).ready(function()
 					//cell.innerHTML = "<b>This is a table header</b>";			   
 
 
-					var radio = document.createElement('input');
-					radio.type = "radio";
-					radio.name = "radiog0";
-					radio.value = entry;
-					radio.id = entry;
+					var button = document.createElement('input');
+					button.type= "button";
+					button.value = ">>>";
+					button.id = entry;
+					button.onclick =  function() { myFuncShowLocus(entry);}
 
 					var lab = document.createElement('label');
 					lab.htmlFor = entry;
@@ -112,12 +112,12 @@ jQuery(document).ready(function()
 					label.htmlFor = entry;
 					label.appendChild(document.createTextNode(cts[0]['values']));
 
-					cell0.appendChild(radio);
+					cell0.appendChild(button);
 					cell1.appendChild(lab);
 					cell2.appendChild(label);
 
 
-
+					//document.getElementById(entry).onclick = function() { myFuncShowLocus(entry);}
 
 
 
@@ -168,7 +168,7 @@ function filter (term, _id, cellNr){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-function myFuncShowLocus() {
+function myFuncShowLocus(c) {
 	var tblDisplay = document.getElementById("myTableLocus");
 	var tblSDisplay = document.getElementById("myTableSeqs");
 	var tblPDisplay = document.getElementById("myTablePlots");
@@ -186,17 +186,7 @@ function myFuncShowLocus() {
 		var contents = db.exec("SELECT Id FROM clusters");
 		console.log(contents);
 
-		var c = -1;
-		contents[0]['values'].sort().forEach(function(entry) {
-				if (document.getElementById(entry).checked) {
-				c = entry;
-				document.getElementById(entry).checked = false;
-				}
-				});
-
 		if (c > -1) {
-			document.getElementById(c).checked = true;
-
 			///////////////////////////////////////////////////////////////
 			var str = "SELECT Locus FROM clusters WHERE Id=" + c;	
 			var cts = db.exec(str);
@@ -611,7 +601,7 @@ function myFunctionPlotUA(){
 <div id="table"></div>
 <table style="width:80%" align="center" id="myTable">
 <tr>
-<td></td>
+<td>Sel.</td>
 <td>I.D.</td>		
 <td>Description:</td>
 </tr>
@@ -619,8 +609,6 @@ function myFunctionPlotUA(){
 
 
 <h4>Table with Locus</h4>
-<br>
-<button onclick="myFuncShowLocus()">Show Locus</button>
 <br>
 <table style="width:80%" align="center" id="myTableLocus">
 <tr>
