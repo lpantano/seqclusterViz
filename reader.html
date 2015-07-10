@@ -3,30 +3,37 @@
 <style>
 
 table {
-	font-family: verdana,arial,sans-serif;
-	font-size:11px;
-	color:#333333;
-	border-width: 1px;
-	border-color: #666666;
-	border-collapse: collapse;
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 1px;
+    border-color: #666666;
+    border-collapse: collapse;
 }
 th {
-	border-width: 1px;
-	padding: 8px;
-	border-style: solid;
-	border-color: #666666;
-	background-color: #dedede;
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #dedede;
 }
 td {
-	border-width: 1px;
-	padding: 8px;
-	border-style: solid;
-	border-color: #666666;
-	background-color: #ffffff;
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: #666666;
+    background-color: #ffffff;
 }
-	
-	
-	
+canvas {
+    width: 100% !important;
+    max-width: 1000px;
+    height: 100% !important;
+    max-height: 500px;
+
+
+}
+   
+    
 </style>
 
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
@@ -47,112 +54,112 @@ td {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 jQuery(document).ready(function() 
-		{
+        {
 
-		var fileInput = document.getElementById('files');
+        var fileInput = document.getElementById('files');
 
-		// Load a db from a file
-		fileInput.addEventListener('change', function(e) {
-			var file = fileInput.files[0];
-			var fileDisplayArea = document.getElementById('table');
-			fileDisplayArea.innerText = ""
-			var tableDisplayArea = document.getElementById("myTable");
-			var reader = new FileReader();              
-			reader.onload = function(e) {
-			var Uints = new Uint8Array(reader.result);
-			var db = new SQL.Database(Uints);
-			//           var contents = db.exec("SELECT Id, Locus FROM clusters WHERE Id=1");
-			//           var contents = db.exec("SELECT * FROM clusters WHERE Id=1");
-			//		   var str = "SELECT * FROM clusters WHERE Id=" + 3;	
-			//           var contents = db.exec(str);
-			//           var contents = db.exec("SELECT Id, Annotation FROM clusters");
-			var contents = db.exec("SELECT Id FROM clusters");
-			console.log(contents);
-
-
-			// Create an empty <thead> element and add it to the table:
-			//var header = tableDisplayArea.createTHead();
-
-				
-			//Deleting rows from table
-			var rowCount = tableDisplayArea.rows.length;
-			for (var x=rowCount-1; x>0; x--) {
-				tableDisplayArea.deleteRow(x);
-			}
-
-	
-				
-				
-			//Removing Radio Buttons	
-			var myradios= document.getElementsByName('radiog0'); //Get all myradio elements from document
-
-    		for (var i = 0; i < myradios.length; i++) { //Loop all myradio elements
-           		myradios[i].parentNode.removeChild(myradios[i]); //Removes the radio button
-    		}	
-				
-				
-			var i = 1;
-			contents[0]['values'].sort().forEach(function(entry) {
-					var str = "SELECT Description FROM clusters WHERE Id=" + entry;	
-					var cts = db.exec(str);
-					console.log(entry);
-					//fileDisplayArea.innerText = fileDisplayArea.innerText + entry + " > " + cts[0]['values'] + "\n";
-
-					//fileDisplayArea.innerText = fileDisplayArea.innerText + i + "\n";
+        // Load a db from a file
+        fileInput.addEventListener('change', function(e) {
+            var file = fileInput.files[0];
+            var fileDisplayArea = document.getElementById('table');
+            fileDisplayArea.innerText = ""
+            var tableDisplayArea = document.getElementById("myTable");
+            var reader = new FileReader();              
+            reader.onload = function(e) {
+            var Uints = new Uint8Array(reader.result);
+            var db = new SQL.Database(Uints);
+            //           var contents = db.exec("SELECT Id, Locus FROM clusters WHERE Id=1");
+            //           var contents = db.exec("SELECT * FROM clusters WHERE Id=1");
+            //         var str = "SELECT * FROM clusters WHERE Id=" + 3;    
+            //           var contents = db.exec(str);
+            //           var contents = db.exec("SELECT Id, Annotation FROM clusters");
+            var contents = db.exec("SELECT Id FROM clusters");
+            console.log(contents);
 
 
+            // Create an empty <thead> element and add it to the table:
+            //var header = tableDisplayArea.createTHead();
 
-					// Create an empty <tr> element and add it to the first position of <thead>:
-					var row = tableDisplayArea.insertRow(i);
-					i++;
+                
+            //Deleting rows from table
+            var rowCount = tableDisplayArea.rows.length;
+            for (var x=rowCount-1; x>0; x--) {
+                tableDisplayArea.deleteRow(x);
+            }
 
-					// Insert a new cell (<td>) at the first position of the "new" <tr> element:
-					var cell0 = row.insertCell(0);
-					var cell1 = row.insertCell(1);
-					var cell2 = row.insertCell(2);
+    
+                
+                
+            //Removing Radio Buttons    
+            var myradios= document.getElementsByName('radiog0'); //Get all myradio elements from document
 
-					// Add some bold text in the new cell:
-					//cell.innerHTML = "<b>This is a table header</b>";			   
+            for (var i = 0; i < myradios.length; i++) { //Loop all myradio elements
+                myradios[i].parentNode.removeChild(myradios[i]); //Removes the radio button
+            }   
+                
+                
+            var i = 1;
+            contents[0]['values'].sort().forEach(function(entry) {
+                    var str = "SELECT Description FROM clusters WHERE Id=" + entry; 
+                    var cts = db.exec(str);
+                    console.log(entry);
+                    //fileDisplayArea.innerText = fileDisplayArea.innerText + entry + " > " + cts[0]['values'] + "\n";
 
-
-					var button = document.createElement('input');
-					button.type= "button";
-					button.value = ">>>";
-					button.id = entry;
-					button.onclick =  function() { myFuncShowLocus(entry);}
-
-					var lab = document.createElement('label');
-					lab.htmlFor = entry;
-					lab.appendChild(document.createTextNode(entry));
-
-					var label = document.createElement('label');
-					label.htmlFor = entry;
-					label.appendChild(document.createTextNode(cts[0]['values']));
-
-					cell0.appendChild(button);
-					cell1.appendChild(lab);
-					cell2.appendChild(label);
-
-
-					//document.getElementById(entry).onclick = function() { myFuncShowLocus(entry);}
+                    //fileDisplayArea.innerText = fileDisplayArea.innerText + i + "\n";
 
 
 
+                    // Create an empty <tr> element and add it to the first position of <thead>:
+                    var row = tableDisplayArea.insertRow(i);
+                    i++;
 
-			});
-			//           fileDisplayArea.innerText = contents[0]['values'];
+                    // Insert a new cell (<td>) at the first position of the "new" <tr> element:
+                    var cell0 = row.insertCell(0);
+                    var cell1 = row.insertCell(1);
+                    var cell2 = row.insertCell(2);
+
+                    // Add some bold text in the new cell:
+                    //cell.innerHTML = "<b>This is a table header</b>";            
 
 
+                    var button = document.createElement('input');
+                    button.type= "button";
+                    button.value = ">>>";
+                    button.id = entry;
+                    button.onclick =  function() { myFuncShowLocus(entry);}
+
+                    var lab = document.createElement('label');
+                    lab.htmlFor = entry;
+                    lab.appendChild(document.createTextNode(entry));
+
+                    var label = document.createElement('label');
+                    label.htmlFor = entry;
+                    label.appendChild(document.createTextNode(cts[0]['values']));
+
+                    cell0.appendChild(button);
+                    cell1.appendChild(lab);
+                    cell2.appendChild(label);
+
+
+                    //document.getElementById(entry).onclick = function() { myFuncShowLocus(entry);}
+
+
+
+
+            });
+            //           fileDisplayArea.innerText = contents[0]['values'];
 
 
 
 
 
-			}
-			reader.readAsArrayBuffer(file);
-			// Prepare a statement
 
-		});
+
+            }
+            reader.readAsArrayBuffer(file);
+            // Prepare a statement
+
+        });
 
 });
 
@@ -165,16 +172,16 @@ jQuery(document).ready(function()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 function filter (term, _id, cellNr){
-	var suche = term.value.toLowerCase();
-	var table = document.getElementById(_id);
-	var ele;
-	for (var r = 1; r < table.rows.length; r++){
-		ele = table.rows[r].cells[cellNr].innerHTML.replace(/<[^>]+>/g,"");
-		if (ele.toLowerCase().indexOf(suche)>=0 )
-			table.rows[r].style.display = '';
-		else table.rows[r].style.display = 'none';
-	}
-}	
+    var suche = term.value.toLowerCase();
+    var table = document.getElementById(_id);
+    var ele;
+    for (var r = 1; r < table.rows.length; r++){
+        ele = table.rows[r].cells[cellNr].innerHTML.replace(/<[^>]+>/g,"");
+        if (ele.toLowerCase().indexOf(suche)>=0 )
+            table.rows[r].style.display = '';
+        else table.rows[r].style.display = 'none';
+    }
+}   
 
 
 
@@ -186,208 +193,208 @@ function filter (term, _id, cellNr){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 function myFuncShowLocus(c) {
-	var tblDisplay = document.getElementById("myTableLocus");
-	var tblSDisplay = document.getElementById("myTableSeqs");
-	var tblPDisplay = document.getElementById("myTablePlots");
-
-	var fileInput = document.getElementById('files');
-
-	var file = fileInput.files[0];
-	console.log(file);
-	
-	var reader1 = new FileReader();              
-	reader1.onload = function(e) {
-		var Uints = new Uint8Array(reader1.result);
-		var db = new SQL.Database(Uints);
-
-		var contents = db.exec("SELECT Id FROM clusters");
-		console.log(contents);
-
-		if (c > -1) {
-			///////////////////////////////////////////////////////////////
-			var str = "SELECT Locus FROM clusters WHERE Id=" + c;	
-			var cts = db.exec(str);
-			console.log(cts);
-
-			// esto para transformat el valor a variables
-			locus_array = JSON.parse(cts[0]['values']);
-			console.log(locus_array);
-
-
-			//Deleting rows from table
-			var rowCount = tblDisplay.rows.length;
-			for (var x=rowCount-1; x>0; x--) {
-				tblDisplay.deleteRow(x);
-			}
-
-			//Inserting new rows
-			var i = 1;
-			locus_array.forEach(function(entry) {
-					var row = tblDisplay.insertRow(i);
-					i++;
-
-					// Insert a new cell (<td>) at the first position of the "new" <tr> element:
-					var cell0 = row.insertCell(0);
-					var cell1 = row.insertCell(1);
-					var cell2 = row.insertCell(2);
-
-
-					var lab0 = document.createElement('label');
-					lab0.htmlFor = i;
-					lab0.appendChild(document.createTextNode(c));
-
-					var lab1 = document.createElement('label');
-					lab1.htmlFor = i;
-					lab1.appendChild(document.createTextNode(i-2));
-
-
-					var entr  = String(entry);
-					var entr0 = entr.split(",");
-					var entr1 = entr0[1] + ":" + entr0[2] + "-" + entr0[3];
-					var lab2 = document.createElement('label');
-					lab2.htmlFor = i;
-					lab2.appendChild(document.createTextNode(entr1));
-
-					cell0.appendChild(lab0);
-					cell1.appendChild(lab1);
-					cell2.appendChild(lab2);
-
-
-			}); 
-
-
-			///////////////////////////////////////////////////////////////
-			var str = "SELECT Profile FROM clusters WHERE Id=" + c;	
-			var cts = db.exec(str);
-			console.log(cts);
-
-			// esto para transformat el valor a variables
-			profile_array = JSON.parse(cts[0]['values']);
-			console.log(profile_array);
-			
-			//Global Variables
-			newNames = profile_array['names'];
-			newX     = profile_array['x'];
-			newYs    = profile_array['y'];
-			console.log(newYs);
-			console.log(newYs[newNames[6]]);
-			
-			
-			var profile_namess = newNames.sort();
-			
-			
-			//Deleting rows from table
-			var rowCount = tblPDisplay.rows.length;
-			for (var x=rowCount-1; x>=0; x--) {
-				tblPDisplay.deleteRow(x);
-			}
-
-			
-			var row = tblPDisplay.insertRow(0);
-			
-			
-			for (var i = 0; i<profile_namess.length; i++) {
-				var cell0 = row.insertCell(i);
-				
-				var label = document.createElement('label');
-				label.htmlFor = profile_namess[i];
-				label.appendChild(document.createTextNode(profile_namess[i]));
-
+    var tblDisplay = document.getElementById("myTableLocus");
+    var tblSDisplay = document.getElementById("myTableSeqs");
+    var tblPDisplay = document.getElementById("myTablePlots");
+
+    var fileInput = document.getElementById('files');
+
+    var file = fileInput.files[0];
+    console.log(file);
+    
+    var reader1 = new FileReader();              
+    reader1.onload = function(e) {
+        var Uints = new Uint8Array(reader1.result);
+        var db = new SQL.Database(Uints);
+
+        var contents = db.exec("SELECT Id FROM clusters");
+        console.log(contents);
+
+        if (c > -1) {
+            ///////////////////////////////////////////////////////////////
+            var str = "SELECT Locus FROM clusters WHERE Id=" + c;   
+            var cts = db.exec(str);
+            console.log(cts);
+
+            // esto para transformat el valor a variables
+            locus_array = JSON.parse(cts[0]['values']);
+            console.log(locus_array);
+
+
+            //Deleting rows from table
+            var rowCount = tblDisplay.rows.length;
+            for (var x=rowCount-1; x>0; x--) {
+                tblDisplay.deleteRow(x);
+            }
+
+            //Inserting new rows
+            var i = 1;
+            locus_array.forEach(function(entry) {
+                    var row = tblDisplay.insertRow(i);
+                    i++;
+
+                    // Insert a new cell (<td>) at the first position of the "new" <tr> element:
+                    var cell0 = row.insertCell(0);
+                    var cell1 = row.insertCell(1);
+                    var cell2 = row.insertCell(2);
+
+
+                    var lab0 = document.createElement('label');
+                    lab0.htmlFor = i;
+                    lab0.appendChild(document.createTextNode(c));
+
+                    var lab1 = document.createElement('label');
+                    lab1.htmlFor = i;
+                    lab1.appendChild(document.createTextNode(i-2));
+
+
+                    var entr  = String(entry);
+                    var entr0 = entr.split(",");
+                    var entr1 = entr0[1] + ":" + entr0[2] + "-" + entr0[3];
+                    var lab2 = document.createElement('label');
+                    lab2.htmlFor = i;
+                    lab2.appendChild(document.createTextNode(entr1));
+
+                    cell0.appendChild(lab0);
+                    cell1.appendChild(lab1);
+                    cell2.appendChild(lab2);
+
+
+            }); 
+
+
+            ///////////////////////////////////////////////////////////////
+            var str = "SELECT Profile FROM clusters WHERE Id=" + c; 
+            var cts = db.exec(str);
+            console.log(cts);
+
+            // esto para transformat el valor a variables
+            profile_array = JSON.parse(cts[0]['values']);
+            console.log(profile_array);
+            
+            //Global Variables
+            newNames = profile_array['names'];
+            newX     = profile_array['x'];
+            newYs    = profile_array['y'];
+            console.log(newYs);
+            console.log(newYs[newNames[6]]);
+            
+            
+            var profile_namess = newNames.sort();
+            
+            
+            //Deleting rows from table
+            var rowCount = tblPDisplay.rows.length;
+            for (var x=rowCount-1; x>=0; x--) {
+                tblPDisplay.deleteRow(x);
+            }
+
+            
+            var row = tblPDisplay.insertRow(0);
+            
+            
+            for (var i = 0; i<profile_namess.length; i++) {
+                var cell0 = row.insertCell(i);
+                
+                var label = document.createElement('label');
+                label.htmlFor = profile_namess[i];
+                label.appendChild(document.createTextNode(profile_namess[i]));
+
 
-				cell0.appendChild(label);
-			}
-			
-			
-			var row = tblPDisplay.insertRow(1);
-			
-			
-			for (var i = 0; i<profile_namess.length; i++) {
-				var cell0 = row.insertCell(i);
-				
-				var check = document.createElement('input');
-				check.type  = "checkbox";
-				check.name  = profile_namess[i];
-				check.value = profile_namess[i];
-				check.id    = profile_namess[i];
-				check.checked = true;
+                cell0.appendChild(label);
+            }
+            
+            
+            var row = tblPDisplay.insertRow(1);
+            
+            
+            for (var i = 0; i<profile_namess.length; i++) {
+                var cell0 = row.insertCell(i);
+                
+                var check = document.createElement('input');
+                check.type  = "checkbox";
+                check.name  = profile_namess[i];
+                check.value = profile_namess[i];
+                check.id    = profile_namess[i];
+                check.checked = true;
 
-				cell0.appendChild(check);
-			}
-			
-			
-			var row = tblPDisplay.insertRow(2);
-			
-			
-			for (var i = 0; i<profile_namess.length; i++) {
-				var cell0 = row.insertCell(i);
-				
-				var color = document.createElement('input');
-				color.type  = "color";
-				color.name  = profile_namess[i];
-				color.value = "#00a2e8";
-				color.id    = "c" + profile_namess[i];
+                cell0.appendChild(check);
+            }
+            
+            
+            var row = tblPDisplay.insertRow(2);
+            
+            
+            for (var i = 0; i<profile_namess.length; i++) {
+                var cell0 = row.insertCell(i);
+                
+                var color = document.createElement('input');
+                color.type  = "color";
+                color.name  = profile_namess[i];
+                color.value = "#00a2e8";
+                color.id    = "c" + profile_namess[i];
 
-				cell0.appendChild(color);
-			}
-			
-			
-			myFunctionPlot();
-		
-			
-			
+                cell0.appendChild(color);
+            }
+            
+            
+            myFunctionPlot();
+        
+            
+            
 
 
-			///////////////////////////////////////////////////////////////
-			var str = "SELECT Sequences FROM clusters WHERE Id=" + c;	
-			var cts = db.exec(str);
-			console.log(cts);
+            ///////////////////////////////////////////////////////////////
+            var str = "SELECT Sequences FROM clusters WHERE Id=" + c;   
+            var cts = db.exec(str);
+            console.log(cts);
 
-			// esto para transformat el valor a variables
-			locus_array = JSON.parse(cts[0]['values']);
-			console.log(locus_array);
+            // esto para transformat el valor a variables
+            locus_array = JSON.parse(cts[0]['values']);
+            console.log(locus_array);
 
 
-			//Deleting rows from table
-			var rowCount = tblSDisplay.rows.length;
-			for (var x=rowCount-1; x>=0; x--) {
-				tblSDisplay.deleteRow(x);
-			}
+            //Deleting rows from table
+            var rowCount = tblSDisplay.rows.length;
+            for (var x=rowCount-1; x>=0; x--) {
+                tblSDisplay.deleteRow(x);
+            }
 
 
 
-			//Insert headers
-			var row = tblSDisplay.insertRow(0);
+            //Insert headers
+            var row = tblSDisplay.insertRow(0);
 
-			var cell0 = row.insertCell(0);
-			var cell1 = row.insertCell(1);
-			var cell2 = row.insertCell(2);
+            var cell0 = row.insertCell(0);
+            var cell1 = row.insertCell(1);
+            var cell2 = row.insertCell(2);
 
 
-			var lab0 = document.createElement('label');
-			lab0.htmlFor = i;
-			lab0.appendChild(document.createTextNode('I.D'));
+            var lab0 = document.createElement('label');
+            lab0.htmlFor = i;
+            lab0.appendChild(document.createTextNode('I.D'));
 
-			var lab1 = document.createElement('label');
-			lab1.htmlFor = i;
-			lab1.appendChild(document.createTextNode('Index'));
+            var lab1 = document.createElement('label');
+            lab1.htmlFor = i;
+            lab1.appendChild(document.createTextNode('Index'));
 
 
-			var lab2 = document.createElement('label');
-			lab2.htmlFor = i;
-			lab2.appendChild(document.createTextNode('Seqs.'));
+            var lab2 = document.createElement('label');
+            lab2.htmlFor = i;
+            lab2.appendChild(document.createTextNode('Seqs.'));
 
-			cell0.appendChild(lab0);
-			cell1.appendChild(lab1);
-			cell2.appendChild(lab2);
+            cell0.appendChild(lab0);
+            cell1.appendChild(lab1);
+            cell2.appendChild(lab2);
 
 
 
-			var arrKeys = [];
-			for (key in locus_array[0]['freq']) {
-				arrKeys.push(key);
-			}
-			arrKeys = arrKeys.sort();
-			console.log(arrKeys);
+            var arrKeys = [];
+            for (key in locus_array[0]['freq']) {
+                arrKeys.push(key);
+            }
+            arrKeys = arrKeys.sort();
+            console.log(arrKeys);
 
 
 
@@ -396,102 +403,102 @@ function myFuncShowLocus(c) {
 
 
 
-			var k = 0;
-			for (var key in arrKeys) {
-				//console.log(locus_array[0]['freq'][key])
-				var cell = row.insertCell(k+3);
+            var k = 0;
+            for (var key in arrKeys) {
+                //console.log(locus_array[0]['freq'][key])
+                var cell = row.insertCell(k+3);
 
-				var label = document.createElement('label');
-				label.htmlFor = i;
-				label.appendChild(document.createTextNode(arrKeys[key]));
+                var label = document.createElement('label');
+                label.htmlFor = i;
+                label.appendChild(document.createTextNode(arrKeys[key]));
 
-				cell.appendChild(label);
+                cell.appendChild(label);
 
-				k++;
-			}
+                k++;
+            }
 
 
-			//Inserting new rows
-			var i = 1;
-			locus_array.forEach(function(entry) {
-					var row = tblSDisplay.insertRow(i);
-					i++;
+            //Inserting new rows
+            var i = 1;
+            locus_array.forEach(function(entry) {
+                    var row = tblSDisplay.insertRow(i);
+                    i++;
 
-					// Insert a new cell (<td>) at the first position of the "new" <tr> element:
-					var cell0 = row.insertCell(0);
-					var cell1 = row.insertCell(1);
-					var cell2 = row.insertCell(2);
+                    // Insert a new cell (<td>) at the first position of the "new" <tr> element:
+                    var cell0 = row.insertCell(0);
+                    var cell1 = row.insertCell(1);
+                    var cell2 = row.insertCell(2);
 
 
-					var lab0 = document.createElement('label');
-					lab0.htmlFor = i;
-					lab0.appendChild(document.createTextNode(c));
+                    var lab0 = document.createElement('label');
+                    lab0.htmlFor = i;
+                    lab0.appendChild(document.createTextNode(c));
 
-					var lab1 = document.createElement('label');
-					lab1.htmlFor = i;
-					lab1.appendChild(document.createTextNode(i-2));
+                    var lab1 = document.createElement('label');
+                    lab1.htmlFor = i;
+                    lab1.appendChild(document.createTextNode(i-2));
 
 
-					var lab2 = document.createElement('label');
-					lab2.htmlFor = i;
-					lab2.appendChild(document.createTextNode(entry['name']));
+                    var lab2 = document.createElement('label');
+                    lab2.htmlFor = i;
+                    lab2.appendChild(document.createTextNode(entry['name']));
 
-					cell0.appendChild(lab0);
-					cell1.appendChild(lab1);
-					cell2.appendChild(lab2);
+                    cell0.appendChild(lab0);
+                    cell1.appendChild(lab1);
+                    cell2.appendChild(lab2);
 
-					var k = 0;
-					for (var key in arrKeys) {
-						//console.log(entry['freq'][key])
-						var cell = row.insertCell(k+3);
+                    var k = 0;
+                    for (var key in arrKeys) {
+                        //console.log(entry['freq'][key])
+                        var cell = row.insertCell(k+3);
 
-						var label = document.createElement('label');
-						label.htmlFor = i;
-						label.appendChild(document.createTextNode(Math.round(entry['freq'][arrKeys[key]]*10)/10));
+                        var label = document.createElement('label');
+                        label.htmlFor = i;
+                        label.appendChild(document.createTextNode(Math.round(entry['freq'][arrKeys[key]]*10)/10));
 
-						cell.appendChild(label);
+                        cell.appendChild(label);
 
-						k++;
-					}
+                        k++;
+                    }
 
 
-			}); 
+            }); 
 
-			sortables_init();
+            sortables_init();
 
-		}
+        }
 
 
 
 
 
-	}
-	reader1.readAsArrayBuffer(file);
+    }
+    reader1.readAsArrayBuffer(file);
 
 
 
-}	
+}   
 
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 var lineChartData = {
-	labels : [],
-	datasets : [
-		{
-		label: "My First dataset",
-	       fillColor : "rgba(220,220,220,0.2)",
-	       strokeColor : "rgba(220,220,220,1)",
-	       data : []
-		},
-		{
-		label: "My Second dataset",
-	       fillColor : "rgba(151,187,205,0.2)",
-	       strokeColor : "rgba(151,187,205,1)",
-	       data : []
-		}
-	]
+    labels : [],
+    datasets : [
+        {
+        label: "My First dataset",
+           fillColor : "rgba(220,220,220,0.2)",
+           strokeColor : "rgba(220,220,220,1)",
+           data : []
+        },
+        {
+        label: "My Second dataset",
+           fillColor : "rgba(151,187,205,0.2)",
+           strokeColor : "rgba(151,187,205,1)",
+           data : []
+        }
+    ]
 
 }
 
@@ -504,93 +511,95 @@ var myLine=null;
 
 
 function myFunctionPlot(){
-	if(myLine!=null){
+    if(myLine!=null){
         myLine.destroy();
     }
-	
-	
-	var ctx = document.getElementById("canvas").getContext("2d");
+    
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.canvas.width = 10;
+    ctx.canvas.width = 10;
 
-	updateData(lineChartData, newX, newYs);
+    updateData(lineChartData, newX, newYs);
 
-	myLine = new Chart(ctx).Line(lineChartData, {
-		responsive: true,
-		tooltipFontSize: 12,
-		multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
-		pointDot : false
-	});
+    myLine = new Chart(ctx).Line(lineChartData, {
+        responsive: true,
+        tooltipFontSize: 12,
+        multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
+        pointDot : false
+    });
 }
 
 
 var updateData = function(oldData){
- 		
-		while (oldData["labels"].length > 0) {
-			oldData["labels"].pop();
-		}
-		
-		for (var d = 0; d < oldData["datasets"].length; d++) {
-			while (oldData["datasets"][d]["data"].length > 0) {
-	    		oldData["datasets"][d]["data"].pop();
-			}
-		}
-		
-		
-		while (oldData["datasets"].length > 0) {
-	   		oldData["datasets"].pop();
-		}
-		
-		
-		for (var i = 0; i<newX.length; i++) {
-			oldData["labels"].push(newX[i]);
-		}
-		
-		for (var d = 0; d < newNames.length; d++) {
-			var id = newNames.sort()[d];
-			
-	   		oldData["datasets"].push(
-				{
-					label: id,
-					fillColor : "rgba(151,187,205,0.1)",
-					strokeColor : document.getElementById("c"+id).value,
-					data : []
-				}
-			);
-			
-			if (document.getElementById(id).checked) {
-				for (var i = 0; i<newYs[id].length; i++) {
-    				oldData["datasets"][d]["data"].push(newYs[id][i]);
-				}
-			}
-			
-			
-		}
-		
-		
+        
+        while (oldData["labels"].length > 0) {
+            oldData["labels"].pop();
+        }
+        
+        for (var d = 0; d < oldData["datasets"].length; d++) {
+            while (oldData["datasets"][d]["data"].length > 0) {
+                oldData["datasets"][d]["data"].pop();
+            }
+        }
+        
+        
+        while (oldData["datasets"].length > 0) {
+            oldData["datasets"].pop();
+        }
+        
+        
+        for (var i = 0; i<newX.length; i++) {
+            oldData["labels"].push(newX[i]);
+        }
+        
+        for (var d = 0; d < newNames.length; d++) {
+            var id = newNames.sort()[d];
+            
+            oldData["datasets"].push(
+                {
+                    label: id,
+                    fillColor : "rgba(151,187,205,0.1)",
+                    strokeColor : document.getElementById("c"+id).value,
+                    data : []
+                }
+            );
+            
+            if (document.getElementById(id).checked) {
+                for (var i = 0; i<newYs[id].length; i++) {
+                    oldData["datasets"][d]["data"].push(newYs[id][i]);
+                }
+            }
+            
+            
+        }
+        
+        
 };
 
 
 
 
 function myFunctionPlotSA(){
- 		
-		for (var d = 0; d < newNames.length; d++) {
-			var id = newNames[d];
-			
-			document.getElementById(id).checked = true;
-		}
-		
-		
+        
+        for (var d = 0; d < newNames.length; d++) {
+            var id = newNames[d];
+            
+            document.getElementById(id).checked = true;
+        }
+        
+        
 }
 
 function myFunctionPlotUA(){
- 		
-		for (var d = 0; d < newNames.length; d++) {
-			var id = newNames[d];
-			
-			document.getElementById(id).checked = false;
-		}
-		
-		
+        
+        for (var d = 0; d < newNames.length; d++) {
+            var id = newNames[d];
+            
+            document.getElementById(id).checked = false;
+        }
+        
+        
 }
 
 
@@ -613,30 +622,32 @@ function myFunctionPlotUA(){
 <br>
 <br>
 <p class="title">Clusters Filter:</p>
-<input name="filter" onkeyup="filter(this, 'myTable', 2)" type="text">	
+<input name="filter" onkeyup="filter(this, 'myTable', 2)" type="text">  
 
 <h4>Table with clusters</h4>
 <br>
+<div id="cluster_wrapper">
 <div id="table"></div>
 <table style="width:80%" align="center" id="myTable">
 <tr>
 <td>Sel.</td>
-<td>I.D.</td>		
+<td>I.D.</td>       
 <td>Description:</td>
 </tr>
 </table>
-
+</div>
 
 <h4>Table with Locus</h4>
 <br>
+<div id="locus">
 <table style="width:80%" align="center" id="myTableLocus">
 <tr>
-<td>I.D.</td>		
-<td>Index</td>		
+<td>I.D.</td>       
+<td>Index</td>      
 <td>Locus:</td>
 </tr>
 </table>
-
+</div>
 
 
 <h4>Table with Seqs</h4>
@@ -644,27 +655,28 @@ function myFunctionPlotUA(){
 
 
 <h4 class="title">Chart Title</h4>
-<canvas id="canvas" height="300" width="600" align="center"></canvas>
+<div id="figure">
+<canvas id="canvas" width="20" height="10" align="center"></canvas>
 <br>
 <h4 class="title">Chart Legend</h4>
-<table style="width:80%" align="center" id="myTablePlots"></table>
+<table style="width:50%" align="center" id="myTablePlots"></table>
 <br>
 <button onclick="myFunctionPlot()">Update Plot!!!</button>
 <button onclick="myFunctionPlotSA()">Select All!!!</button>
 <button onclick="myFunctionPlotUA()">Unselect All!!!</button>
 <br>
 <br>
-
+</div>
 
 
 <p class="title">Seqs. Filter:</p>
-<input name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text">	
+<input name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text">  
 <br>
 <br>
 <table style="width:80%" align="center" id="myTableSeqs" class="sortable">
 <tr>
-<td>I.D.</td>		
-<td>Index</td>		
+<td>I.D.</td>       
+<td>Index</td>      
 <td>Seqs:</td>
 </tr>
 </table>
