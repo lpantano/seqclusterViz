@@ -6,23 +6,14 @@ table {
     font-family: verdana,arial,sans-serif;
     font-size:11px;
     color:#333333;
-    border-width: 1px;
-    border-color: #666666;
-    border-collapse: collapse;
 }
 th {
     border-width: 1px;
     padding: 8px;
-    border-style: solid;
-    border-color: #666666;
-    background-color: #dedede;
 }
 td {
     border-width: 1px;
     padding: 8px;
-    border-style: solid;
-    border-color: #666666;
-    background-color: #ffffff;
 }
 
     
@@ -31,6 +22,7 @@ td {
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>clusters information</title>
 <link rel="stylesheet" href="main_style.css">
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
 <script type="text/javascript" src="jquery-1.10.0.min.js"></script>
 <script type="text/javascript" src="read.js"></script>
@@ -618,7 +610,7 @@ function myFunctionPlotUA(){
 <br>
 <div id="cluster_wrapper">
 <div id="table"></div>
-<table style="width:80%" align="center" id="myTable">
+<table class="table" style="width:80%" align="center" id="myTable">
 <tr>
 <td>Sel.</td>
 <td>I.D.</td>       
@@ -647,6 +639,9 @@ function myFunctionPlotUA(){
 <h4 class="title">Chart Title</h4>
 <div id="figure">
 <canvas id="canvas" width="20" height="10" align="center"></canvas>
+<br>
+</div>
+<div if="table_figure_options">
 <br>
 <h4 class="title">Chart Legend</h4>
 <table style="width:50%" align="center" id="myTablePlots"></table>
