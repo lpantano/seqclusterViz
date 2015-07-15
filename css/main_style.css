@@ -1,0 +1,67 @@
+body {
+     margin-left: 2%; 
+}
+
+
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+
+
+}
+
+#figure {
+    width: 800px;
+    height: 300px;
+    padding: 2px;
+    margin: 2px;
+}
+
+
+.button-secondary {
+                background: rgb(66, 184, 221); /* this is a light blue */
+                        
+}
+
+
+.fileUpload {
+    overflow: hidden;
+        width: 90px !important;
+        height: 40px !important;
+
+}
+
+.fileUpload input {
+        display: block !important;
+        width: 90px !important;
+        height: 40px !important;
+        opacity: 0 !important;
+        overflow: hidden !important;
+}
+
+.btn-file {
+position: relative;
+overflow: hidden;
+                        
+}
+
+.btn-file input[type=file] {
+position: absolute;
+top: 0;
+right:0;
+min-width:100%;
+min-height:100%;
+font-size:100px;
+text-align:right;
+filter:alpha(opacity=0);
+opacity:0;
+outline:none;
+background:white;
+cursor:inherit;
+display:block;
+}
+
+.cluster_wrapper {
+    height: 400px;
+    overflow-y: scroll;
+}
