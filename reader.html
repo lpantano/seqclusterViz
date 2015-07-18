@@ -41,7 +41,7 @@ jQuery(document).ready(function()
             //         var str = "SELECT * FROM clusters WHERE Id=" + 3;
             //           var contents = db.exec(str);
             //           var contents = db.exec("SELECT Id, Annotation FROM clusters");
-            var contents = db.exec("SELECT Id FROM clusters");
+            var contents = db.exec("SELECT Id, Description FROM clusters");
             //console.log(contents);
 
 
@@ -68,8 +68,8 @@ jQuery(document).ready(function()
 
             var i = 1;
             contents[0]['values'].sort().forEach(function(entry) {
-                    var str = "SELECT Description FROM clusters WHERE Id=" + entry;
-                    var cts = db.exec(str);
+                    //var str = "SELECT Description FROM clusters WHERE Id=" + entry;
+                    //var cts = db.exec(str);
                     //console.log(entry);
                     //fileDisplayArea.innerText = fileDisplayArea.innerText + entry + " > " + cts[0]['values'] + "\n";
 
@@ -95,15 +95,15 @@ jQuery(document).ready(function()
                     button.value = ">>>";
                     button.className = "button-xsmall pure-button";
                     button.id = entry;
-                    button.onclick =  function() { myFuncShowLocus(entry);}
+                    button.onclick =  function() { myFuncShowLocus(entry[0]);}
 
                     var lab = document.createElement('label');
                     lab.htmlFor = entry;
-                    lab.appendChild(document.createTextNode(entry));
+                    lab.appendChild(document.createTextNode(entry[0]));
 
                     var label = document.createElement('label');
                     label.htmlFor = entry;
-                    label.appendChild(document.createTextNode(cts[0]['values']));
+                    label.appendChild(document.createTextNode(entry[1]));
 
                     cell0.appendChild(button);
                     cell1.appendChild(lab);
@@ -176,18 +176,18 @@ function myFuncShowLocus(c) {
         var Uints = new Uint8Array(reader1.result);
         var db = new SQL.Database(Uints);
 
-        var contents = db.exec("SELECT Id FROM clusters");
-        console.log(contents);
+        //var contents = db.exec("SELECT Id FROM clusters");
+        //console.log(contents);
 
         if (c > -1) {
             ///////////////////////////////////////////////////////////////
             var str = "SELECT Locus FROM clusters WHERE Id=" + c;
             var cts = db.exec(str);
-            console.log(cts);
+            //console.log(cts);
 
             // esto para transformat el valor a variables
             locus_array = JSON.parse(cts[0]['values']);
-            console.log(locus_array);
+            //console.log(locus_array);
 
 
             //Deleting rows from table
@@ -239,7 +239,7 @@ function myFuncShowLocus(c) {
 
             // esto para transformat el valor a variables
             profile_array = JSON.parse(cts[0]['values']);
-            console.log(profile_array);
+            //console.log(profile_array);
 
             //Global Variables
             newNames = profile_array['names'];
@@ -316,11 +316,11 @@ function myFuncShowLocus(c) {
             ///////////////////////////////////////////////////////////////
             var str = "SELECT Sequences FROM clusters WHERE Id=" + c;
             var cts = db.exec(str);
-            console.log(cts);
+            //console.log(cts);
 
             // esto para transformat el valor a variables
             locus_array = JSON.parse(cts[0]['values']);
-            console.log(locus_array);
+            //console.log(locus_array);
 
 
             //Deleting rows from table
@@ -363,7 +363,7 @@ function myFuncShowLocus(c) {
                 arrKeys.push(key);
             }
             arrKeys = arrKeys.sort();
-            console.log(arrKeys);
+            //console.log(arrKeys);
 
 
 
@@ -423,7 +423,8 @@ function myFuncShowLocus(c) {
 
                         var label = document.createElement('label');
                         label.htmlFor = i;
-                        label.appendChild(document.createTextNode(Math.round(entry['freq'][arrKeys[key]]*10)/10));
+                        //label.appendChild(document.createTextNode(Math.round(entry['freq'][arrKeys[key]]*10)/10));
+                        label.appendChild(document.createTextNode(entry['freq'][arrKeys[key]]));
 
                         cell.appendChild(label);
 
