@@ -22,6 +22,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 jQuery(document).ready(function()
         {
+        $("#changeallcolorButton").click(function() {
+
+            $('input:checked').each(function() {
+            console.log(this.id);
+             $("#" + "c" + this.id).val($("#allcolors").val());
+            
+            });
+        });
 
         var fileInput = document.getElementById('files');
 
@@ -365,13 +373,6 @@ function myFuncShowLocus(c) {
             arrKeys = arrKeys.sort();
             //console.log(arrKeys);
 
-
-
-
-
-
-
-
             var k = 0;
             for (var key in arrKeys) {
                 //console.log(locus_array[0]['freq'][key])
@@ -576,7 +577,6 @@ function myFunctionPlotUA(){
 
 
 
-
 </script>
 
 
@@ -629,36 +629,54 @@ function myFunctionPlotUA(){
 
 <div class="row">
  <div class="col-md-6">
-<h4>Table with Locus</h4>
-<br>
-<div id="locus">
-<table  class="table" style="width:80%" align="center" id="myTableLocus">
-<tr>
-<td>I.D.</td>
-<td>Index</td>
-<td>Locus:</td>
-</tr>
-</table>
-</div>
-</div>
+  <h4>Table with Locus</h4>
+  <br>
+  <div id="locus">
+  <table  class="table" style="width:80%" align="center" id="myTableLocus">
+  <tr>
+  <td>I.D.</td>
+  <td>Index</td>
+  <td>Locus:</td>
+  </tr>
+  </table>
+  </div>
+ </div>
 
-<div class="col-md-6">
-<h4 class="title">Chart Title</h4>
-<div id="figure">
-<canvas id="canvas" width="20" height="10" align="center"></canvas>
+ <div class="col-md-6">
+
+  <div class="row">
+   <h4 class="title">Abundance profile along precursor</h4>
+    <div id="figure">
+     <canvas id="canvas" width="20" height="10" align="center"></canvas>
+     <br>
+    </div>
+  </div>
+
+
+  <div class="row">
+   <div class="col-md-3">
+    <div if="table_figure_options">
+     <br>
+     <h4 class="title">Chart Legend</h4>
+     <table  style="width:50%" align="center" id="myTablePlots"></table>
+    </div>
+   </div>
+  </div>
+
 <br>
-</div>
-<div if="table_figure_options">
-<br>
-<h4 class="title">Chart Legend</h4>
-<table  style="width:50%" align="center" id="myTablePlots"></table>
-<br>
-<button class="button-secondary pure-button" onclick="myFunctionPlot()">Update Plot!!!</button>
-<button class="button-secondary pure-button" onclick="myFunctionPlotSA()">Select All!!!</button>
-<button class="button-secondary pure-button" onclick="myFunctionPlotUA()">Unselect All!!!</button>
-<br>
-<br>
-</div>
+
+  <div class="row">
+   <input type="color" id="allcolors"/>
+   <button class="button-secondary pure-button" id="changeallcolorButton" >Change colors of selected samples!!!</button>
+  </div>
+  <br>
+  <div class="row">
+   <button class="button-secondary pure-button" onclick="myFunctionPlot()">Update Plot!!!</button>
+   <button class="button-secondary pure-button" onclick="myFunctionPlotSA()">Select All!!!</button>
+   <button class="button-secondary pure-button" onclick="myFunctionPlotUA()">Unselect All!!!</button>
+  </div>
+
+ </div>
 </div>
 
 </div>
