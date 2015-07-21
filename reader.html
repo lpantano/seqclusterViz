@@ -31,148 +31,11 @@ jQuery(document).ready(function()
             });
         });
 
-        var fileInput = document.getElementById('files');
 
-        // Load a db from a file
-        fileInput.addEventListener('change', function(e) {
-            document.getElementById("uploadFile").value = this.value;
-            var file = fileInput.files[0];
-            var fileDisplayArea = document.getElementById('table');
-            fileDisplayArea.innerText = ""
-            var tableDisplayArea = document.getElementById("myTable");
-            var reader = new FileReader();
-            reader.onload = function(e) {
-            var Uints = new Uint8Array(reader.result);
-            var db = new SQL.Database(Uints);
-            //           var contents = db.exec("SELECT Id, Locus FROM clusters WHERE Id=1");
-            //           var contents = db.exec("SELECT * FROM clusters WHERE Id=1");
-            //         var str = "SELECT * FROM clusters WHERE Id=" + 3;
-            //           var contents = db.exec(str);
-            //           var contents = db.exec("SELECT Id, Annotation FROM clusters");
-            var contents = db.exec("SELECT Id, Description FROM clusters");
-            //console.log(contents);
-
-
-            // Create an empty <thead> element and add it to the table:
-            //var header = tableDisplayArea.createTHead();
-
-
-            //Deleting rows from table
-            var rowCount = tableDisplayArea.rows.length;
-            for (var x=rowCount-1; x>0; x--) {
-                tableDisplayArea.deleteRow(x);
-            }
-
-
-
-
-            //Removing Radio Buttons
-            var myradios= document.getElementsByName('radiog0'); //Get all myradio elements from document
-
-            for (var i = 0; i < myradios.length; i++) { //Loop all myradio elements
-                myradios[i].parentNode.removeChild(myradios[i]); //Removes the radio button
-            }
-
-
-            var i = 1;
-            contents[0]['values'].sort().forEach(function(entry) {
-                    //var str = "SELECT Description FROM clusters WHERE Id=" + entry;
-                    //var cts = db.exec(str);
-                    //console.log(entry);
-                    //fileDisplayArea.innerText = fileDisplayArea.innerText + entry + " > " + cts[0]['values'] + "\n";
-
-                    //fileDisplayArea.innerText = fileDisplayArea.innerText + i + "\n";
-
-
-
-                    // Create an empty <tr> element and add it to the first position of <thead>:
-                    var row = tableDisplayArea.insertRow(i);
-                    i++;
-
-                    // Insert a new cell (<td>) at the first position of the "new" <tr> element:
-                    var cell0 = row.insertCell(0);
-                    var cell1 = row.insertCell(1);
-                    var cell2 = row.insertCell(2);
-
-                    // Add some bold text in the new cell:
-                    //cell.innerHTML = "<b>This is a table header</b>";
-
-
-                    var button = document.createElement('input');
-                    button.type= "button";
-                    button.value = ">>>";
-                    button.className = "button-xsmall pure-button";
-                    button.id = entry;
-                    button.onclick =  function() { myFuncShowLocus(entry[0]);}
-
-                    var lab = document.createElement('label');
-                    lab.htmlFor = entry;
-                    lab.appendChild(document.createTextNode(entry[0]));
-
-                    var label = document.createElement('label');
-                    label.htmlFor = entry;
-                    label.appendChild(document.createTextNode(entry[1]));
-
-                    cell0.appendChild(button);
-                    cell1.appendChild(lab);
-                    cell2.appendChild(label);
-
-
-                    //document.getElementById(entry).onclick = function() { myFuncShowLocus(entry);}
-
-
-
-
-            });
-            //           fileDisplayArea.innerText = contents[0]['values'];
-
-
-
-
-
-
-
-            }
-            reader.readAsArrayBuffer(file);
-            // Prepare a statement
-
-        });
-
-});
-
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-function filter (term, _id, cellNr){
-    var suche = term.value.toLowerCase();
-    var table = document.getElementById(_id);
-    var ele;
-    for (var r = 1; r < table.rows.length; r++){
-        ele = table.rows[r].cells[cellNr].innerHTML.replace(/<[^>]+>/g,"");
-        if (ele.toLowerCase().indexOf(suche)>=0 )
-            table.rows[r].style.display = '';
-        else table.rows[r].style.display = 'none';
-    }
-}
-
-
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-function myFuncShowLocus(c) {
+   var myFuncShowLocus = function(c) {
     var tblDisplay = document.getElementById("myTableLocus");
     var tblSDisplay = document.getElementById("myTableSeqs");
-    var tblPDisplay = document.getElementById("myTablePlots");
+    var tblPDisplay = document.getElementById("table_figure_options");
 
     var fileInput = document.getElementById('files');
 
@@ -189,12 +52,12 @@ function myFuncShowLocus(c) {
 
         if (c > -1) {
             ///////////////////////////////////////////////////////////////
-            var str = "SELECT Locus FROM clusters WHERE Id=" + c;
+            var str = "SELECT Locus, Profile, Sequences FROM clusters WHERE Id=" + c;
             var cts = db.exec(str);
-            //console.log(cts);
+            console.log(cts[0]['values'][0][0]);
 
             // esto para transformat el valor a variables
-            locus_array = JSON.parse(cts[0]['values']);
+            locus_array = JSON.parse(cts[0]['values'][0][0]);
             //console.log(locus_array);
 
 
@@ -241,12 +104,8 @@ function myFuncShowLocus(c) {
 
 
             ///////////////////////////////////////////////////////////////
-            var str = "SELECT Profile FROM clusters WHERE Id=" + c;
-            var cts = db.exec(str);
-            //console.log(cts);
-
             // esto para transformat el valor a variables
-            profile_array = JSON.parse(cts[0]['values']);
+            profile_array = JSON.parse(cts[0]['values'][0][1]);
             //console.log(profile_array);
 
             //Global Variables
@@ -261,32 +120,17 @@ function myFuncShowLocus(c) {
 
 
             //Deleting rows from table
-            var rowCount = tblPDisplay.rows.length;
-            for (var x=rowCount-1; x>=0; x--) {
-                tblPDisplay.deleteRow(x);
-            }
+            $('#table_figure_options').html('');
 
-
-            var row = tblPDisplay.insertRow(0);
-
+    
 
             for (var i = 0; i<profile_namess.length; i++) {
-                var cell0 = row.insertCell(i);
-
+                var minidiv = document.createElement( "div" );
+                $(minidiv).addClass('colors');
+                
                 var label = document.createElement('label');
                 label.htmlFor = profile_namess[i];
                 label.appendChild(document.createTextNode(profile_namess[i]));
-
-
-                cell0.appendChild(label);
-            }
-
-
-            var row = tblPDisplay.insertRow(1);
-
-
-            for (var i = 0; i<profile_namess.length; i++) {
-                var cell0 = row.insertCell(i);
 
                 var check = document.createElement('input');
                 check.type  = "checkbox";
@@ -295,39 +139,28 @@ function myFuncShowLocus(c) {
                 check.id    = profile_namess[i];
                 check.checked = true;
 
-                cell0.appendChild(check);
-            }
-
-
-            var row = tblPDisplay.insertRow(2);
-
-
-            for (var i = 0; i<profile_namess.length; i++) {
-                var cell0 = row.insertCell(i);
-
                 var color = document.createElement('input');
                 color.type  = "color";
                 color.name  = profile_namess[i];
                 color.value = "#00a2e8";
                 color.id    = "c" + profile_namess[i];
 
-                cell0.appendChild(color);
+                $(minidiv).append($(label));
+                $(minidiv).append($(check));
+                $(minidiv).append($(color));
+                $("#table_figure_options").append($(minidiv));
+                
             }
+
+
 
 
             myFunctionPlot();
 
 
-
-
-
             ///////////////////////////////////////////////////////////////
-            var str = "SELECT Sequences FROM clusters WHERE Id=" + c;
-            var cts = db.exec(str);
-            //console.log(cts);
-
             // esto para transformat el valor a variables
-            locus_array = JSON.parse(cts[0]['values']);
+            locus_array = JSON.parse(cts[0]['values'][0][2]);
             //console.log(locus_array);
 
 
@@ -448,8 +281,157 @@ function myFuncShowLocus(c) {
 
 
 
+   }
+
+        var fileInput = document.getElementById('files');
+
+        // Load a db from a file
+        fileInput.addEventListener('change', function(e) {
+            document.getElementById("uploadFile").value = this.value;
+            var file = fileInput.files[0];
+            var fileDisplayArea = document.getElementById('table');
+            fileDisplayArea.innerText = ""
+            var tableDisplayArea = document.getElementById("myTable");
+            var reader = new FileReader();
+            reader.onload = function(e) {
+            var Uints = new Uint8Array(reader.result);
+            var db = new SQL.Database(Uints);
+            //           var contents = db.exec("SELECT Id, Locus FROM clusters WHERE Id=1");
+            //           var contents = db.exec("SELECT * FROM clusters WHERE Id=1");
+            //         var str = "SELECT * FROM clusters WHERE Id=" + 3;
+            //           var contents = db.exec(str);
+            //           var contents = db.exec("SELECT Id, Annotation FROM clusters");
+            var contents = db.exec("SELECT Id, Description FROM clusters");
+            //console.log(contents);
+
+
+            // Create an empty <thead> element and add it to the table:
+            //var header = tableDisplayArea.createTHead();
+
+
+            //Deleting rows from table
+            var rowCount = tableDisplayArea.rows.length;
+            for (var x=rowCount-1; x>0; x--) {
+                tableDisplayArea.deleteRow(x);
+            }
+
+
+
+
+            //Removing Radio Buttons
+            var myradios= document.getElementsByName('radiog0'); //Get all myradio elements from document
+
+            for (var i = 0; i < myradios.length; i++) { //Loop all myradio elements
+                myradios[i].parentNode.removeChild(myradios[i]); //Removes the radio button
+            }
+
+
+            var i = 1;
+            contents[0]['values'].sort().forEach(function(entry) {
+                    //var str = "SELECT Description FROM clusters WHERE Id=" + entry;
+                    //var cts = db.exec(str);
+                    //console.log(entry);
+                    //fileDisplayArea.innerText = fileDisplayArea.innerText + entry + " > " + cts[0]['values'] + "\n";
+
+                    //fileDisplayArea.innerText = fileDisplayArea.innerText + i + "\n";
+
+
+
+                    // Create an empty <tr> element and add it to the first position of <thead>:
+                    var row = tableDisplayArea.insertRow(i);
+                    i++;
+
+                    // Insert a new cell (<td>) at the first position of the "new" <tr> element:
+                    var cell0 = row.insertCell(0);
+                    var cell1 = row.insertCell(1);
+                    var cell2 = row.insertCell(2);
+
+                    // Add some bold text in the new cell:
+                    //cell.innerHTML = "<b>This is a table header</b>";
+
+
+                    var button = document.createElement('input');
+                    button.type= "button";
+                    button.value = ">>>";
+                    button.className = "button-xsmall pure-button";
+                    button.id = entry;
+                    button.onclick =  function() { myFuncShowLocus(entry[0]);}
+
+                    var lab = document.createElement('label');
+                    lab.htmlFor = entry;
+                    lab.appendChild(document.createTextNode(entry[0]));
+
+                    var label = document.createElement('label');
+                    label.htmlFor = entry;
+                    label.appendChild(document.createTextNode(entry[1]));
+
+                    cell0.appendChild(button);
+                    cell1.appendChild(lab);
+                    cell2.appendChild(label);
+
+
+                    //document.getElementById(entry).onclick = function() { myFuncShowLocus(entry);}
+
+
+
+
+            });
+            //           fileDisplayArea.innerText = contents[0]['values'];
+
+
+
+
+
+
+
+            }
+            reader.readAsArrayBuffer(file);
+            // Prepare a statement
+
+        });
+        
+        $('#allcolors').on('input', function() {
+           $('input:checked').each(function() {
+            console.log(this.id);
+             $("#" + "c" + this.id).val($("#allcolors").val());
+            
+           });
+
+           myFunctionPlot();
+        } );
+        
+        
+});
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+function filter (term, _id, cellNr){
+    var suche = term.value.toLowerCase();
+    var table = document.getElementById(_id);
+    var ele;
+    for (var r = 1; r < table.rows.length; r++){
+        ele = table.rows[r].cells[cellNr].innerHTML.replace(/<[^>]+>/g,"");
+        if (ele.toLowerCase().indexOf(suche)>=0 )
+            table.rows[r].style.display = '';
+        else table.rows[r].style.display = 'none';
+    }
 }
 
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -530,7 +512,7 @@ var updateData = function(oldData){
             oldData["datasets"].push(
                 {
                     label: id,
-                    fillColor : "rgba(151,187,205,0.1)",
+                    fillColor : "rgba(151,187,205,0)",
                     strokeColor : document.getElementById("c"+id).value,
                     data : []
                 }
@@ -654,13 +636,10 @@ function myFunctionPlotUA(){
 
 
   <div class="row">
-   <div class="col-md-3">
-    <div if="table_figure_options">
-     <br>
-     <h4 class="title">Chart Legend</h4>
-     <table  style="width:50%" align="center" id="myTablePlots"></table>
+
+    <div id="table_figure_options">
     </div>
-   </div>
+
   </div>
 
 <br>
@@ -681,7 +660,7 @@ function myFunctionPlotUA(){
 
 </div>
 
-<h4>Table with Seqs</h4>
+<h4>Table with Sequences</h4>
 <br>
 
 <div class="row">
