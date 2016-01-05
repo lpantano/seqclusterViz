@@ -6,17 +6,17 @@
 <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 <link rel="stylesheet" href="css/main_style.css">
-
-
+<link rel="stylesheet" type="text/css" href="css/fornac.css" media="screen" />
 
 <script type="text/javascript" src="js/jquery-1.10.0.min.js"></script>
 <script type="text/javascript" src="js/read.js"></script>
 <script type="text/javascript" src="js/sql.js"></script>
 <script type="text/javascript" src="js/Chart.js"></script>
 <script type="text/javascript" src="js/sortable.js"></script>
+<script type='text/javascript' src='js/d3.js'></script>
+<script type='text/javascript' src='js/fornac.js'></script>
 
 <script>
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,9 +52,17 @@ jQuery(document).ready(function(){
 
             if (c > -1) {
                 ///////////////////////////////////////////////////////////////
-                var str = "SELECT Locus, Profile, Sequences FROM clusters WHERE Id=" + c;
+                var str = "SELECT Locus, Profile, Sequences, Precursor FROM clusters WHERE Id=" + c;
                 var cts = db.exec(str);
-                console.log(cts[0]['values'][0][0]);
+                // console.log(cts[0]['values'][0][0]);
+
+                // show precursor structure
+                precursor_array = JSON.parse(cts[0]['values'][0][3]);
+                // console.log(precursor_array);
+                var container = new FornaContainer("#precursor_figure_options", {'applyForce': false});
+        		var options = {'structure': precursor_array['structure'],
+                       		   'sequence':  precursor_array['seq']};
+        		container.addRNA(options.structure, options);
 
                 // esto para transformat el valor a variables
                 locus_array = JSON.parse(cts[0]['values'][0][0]);
@@ -113,16 +121,11 @@ jQuery(document).ready(function(){
                 newX     = profile_array['x'];
                 newYs    = profile_array['y'];
                 //console.log(newYs);
-                //console.log(newYs[newNames[6]]);
-
 
                 var profile_namess = newNames.sort();
 
-
                 //Deleting rows from table
                 $('#table_figure_options').html('');
-
-
 
                 for (var i = 0; i<profile_namess.length; i++) {
                     var minidiv = document.createElement( "div" );
@@ -152,25 +155,18 @@ jQuery(document).ready(function(){
                     
                 }
 
-
-
-
                 myFunctionPlot();
-
 
                 ///////////////////////////////////////////////////////////////
                 // esto para transformat el valor a variables
                 locus_array = JSON.parse(cts[0]['values'][0][2]);
                 //console.log(locus_array);
 
-
                 //Deleting rows from table
                 var rowCount = tblSDisplay.rows.length;
                 for (var x=rowCount-1; x>=0; x--) {
                     tblSDisplay.deleteRow(x);
                 }
-
-
 
                 //Insert headers
                 var row = tblSDisplay.insertRow(0);
@@ -197,8 +193,6 @@ jQuery(document).ready(function(){
                 cell1.appendChild(lab1);
                 cell2.appendChild(lab2);
 
-
-
                 var arrKeys = [];
                 for (key in locus_array[0]['freq']) {
                     arrKeys.push(key);
@@ -219,7 +213,6 @@ jQuery(document).ready(function(){
 
                     k++;
                 }
-
 
                 //Inserting new rows
                 var i = 1;
@@ -272,10 +265,6 @@ jQuery(document).ready(function(){
 
             }
 
-
-
-
-
         }
         reader1.readAsArrayBuffer(file);
     }
@@ -296,10 +285,8 @@ jQuery(document).ready(function(){
         var contents = db.exec("SELECT Id, Description FROM clusters");
         //console.log(contents);
 
-
         // Create an empty <thead> element and add it to the table:
         //var header = tableDisplayArea.createTHead();
-
 
         //Deleting rows from table
         var rowCount = tableDisplayArea.rows.length;
@@ -313,7 +300,6 @@ jQuery(document).ready(function(){
         for (var i = 0; i < myradios.length; i++) { //Loop all myradio elements
             myradios[i].parentNode.removeChild(myradios[i]); //Removes the radio button
         }
-
 
         var i = 1;
         contents[0]['values'].sort().forEach(function(entry) {
@@ -349,7 +335,6 @@ jQuery(document).ready(function(){
             cell1.appendChild(lab);
             cell2.appendChild(label);
 
-
             //document.getElementById(entry).onclick = function() { myFuncShowLocus(entry);}
 
         });
@@ -369,8 +354,7 @@ jQuery(document).ready(function(){
 
         myFunctionPlot();
     } );
-    
-        
+
 });
 
 
@@ -512,11 +496,8 @@ function myFunctionPlotUA(){
 
 </script>
 
-
-
-
-
 </head>
+
 <body id="main">
 
 <br>
@@ -574,6 +555,7 @@ function myFunctionPlotUA(){
                 </tr>
                 </table>
             </div>
+            <div id="precursor_figure_options"></div>
         </div>
 
         <div class="col-md-6">
@@ -586,21 +568,18 @@ function myFunctionPlotUA(){
                 </div>
             </div>
 
-
             <div class="row">
-
                 <div id="table_figure_options">
                 </div>
             </div>
-
             <br>
 
             <div class="row">
                 <input type="color" id="allcolors"/>
                 <button class="button-secondary pure-button" id="changeallcolorButton" >Change colors of selected samples!!!</button>
             </div>
-
             <br>
+
             <div class="row">
                 <button class="button-secondary pure-button" onclick="myFunctionPlot()">Update Plot!!!</button>
                 <button class="button-secondary pure-button" onclick="myFunctionPlotSA()">Select All!!!</button>
