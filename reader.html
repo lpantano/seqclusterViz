@@ -68,7 +68,6 @@ jQuery(document).ready(function(){
                 locus_array = JSON.parse(cts[0]['values'][0][0]);
                 //console.log(locus_array);
 
-
                 //Deleting rows from table
                 var rowCount = tblDisplay.rows.length;
                 for (var x=rowCount-1; x>0; x--) {
@@ -107,9 +106,7 @@ jQuery(document).ready(function(){
                         cell1.appendChild(lab1);
                         cell2.appendChild(lab2);
 
-
                 });
-
 
                 ///////////////////////////////////////////////////////////////
                 // esto para transformat el valor a variables
@@ -394,13 +391,11 @@ var lineChartData = {
 
 }
 
-
 var newNames;
 var newX;
 var newYs;
 
 var myLine=null;
-
 
 function myFunctionPlot(){
     if(myLine!=null){
@@ -469,8 +464,6 @@ var updateData = function(oldData){
 };
 
 
-
-
 function myFunctionPlotSA(){
 
         for (var d = 0; d < newNames.length; d++) {
@@ -482,6 +475,7 @@ function myFunctionPlotSA(){
 
 }
 
+
 function myFunctionPlotUA(){
 
         for (var d = 0; d < newNames.length; d++) {
@@ -489,8 +483,6 @@ function myFunctionPlotUA(){
 
             document.getElementById(id).checked = false;
         }
-
-
 }
 
 
@@ -555,6 +547,7 @@ function myFunctionPlotUA(){
                 </tr>
                 </table>
             </div>
+            <br>
             <div id="precursor_figure_options"></div>
         </div>
 
