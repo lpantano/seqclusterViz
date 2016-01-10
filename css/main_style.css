@@ -10,6 +10,15 @@ canvas {
 
 }
 
+#locus {
+    overflow-y:auto;
+    height: 300px;
+}
+
+#filtertext {
+    width: 300px;
+}
+
 #figure {
     width: 800px;
     height: 300px;

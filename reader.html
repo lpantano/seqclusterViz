@@ -5,8 +5,8 @@
 <title>clusters information</title>
 <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<link rel="stylesheet" href="css/main_style.css">
 <link rel="stylesheet" type="text/css" href="css/fornac.css" media="screen" />
+<link rel="stylesheet" href="css/main_style.css">
 
 <script type="text/javascript" src="js/jquery-1.10.0.min.js"></script>
 <script type="text/javascript" src="js/read.js"></script>
@@ -553,7 +553,9 @@ function myFunctionPlotUA(){
                 </table>
             </div>
             <br>
+            <h4>Secondary structure</h4>
             <div id="precursor_figure_options"></div>
+            <br>
         </div>
 
         <div class="col-md-6">
@@ -587,13 +589,13 @@ function myFunctionPlotUA(){
         </div>
     </div>
 </div>
-
+<br>
 <h4>Table with Sequences</h4>
 <br>
 <div class="row">
     <div class="col-md-1">
         <span class="title">Sequence filter:</span>
-        <input class="form-control" name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text">
+        <input class="form-control" id="filtertext" name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text" >
     </div>
 </div>
 
