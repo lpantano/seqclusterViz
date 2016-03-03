@@ -26,18 +26,64 @@ jQuery(document).ready(function(){
     $("#changeallcolorButton").click(function() {
 
         $('input:checked').each(function() {
-            console.log(this.id);
+            // console.log(this.id);
             $("#" + "c" + this.id).val($("#allcolors").val());
         
         });
     });
 
 
+    var empty_tables = function(t){
+        var rowCount = t.rows.length;
+        for (var x=rowCount-1; x>0; x--) {
+            t.deleteRow(x);
+        }
+    }
+
+
+    var plot_fig_options = function(newNames){
+        //Deleting rows from table
+        
+        var tblPDisplay = document.getElementById("table_figure_options");
+       if (newNames!=null & tblPDisplay.innerText==""){
+            var profile_namess = newNames.sort();
+            for (var i = 0; i<profile_namess.length; i++) {
+                var minidiv = document.createElement( "div" );
+                $(minidiv).addClass('colors');
+                
+                var label = document.createElement('label');
+                label.htmlFor = profile_namess[i];
+                label.appendChild(document.createTextNode(profile_namess[i]));
+
+                var check = document.createElement('input');
+                check.type  = "checkbox";
+                check.name  = profile_namess[i];
+                check.value = profile_namess[i];
+                check.id    = profile_namess[i];
+                check.checked = true;
+
+                var color = document.createElement('input');
+                color.type  = "color";
+                color.name  = profile_namess[i];
+                color.value = "#00a2e8";
+                color.id    = "c" + profile_namess[i];
+
+                $(minidiv).append($(label));
+                $(minidiv).append($(check));
+                $(minidiv).append($(color));
+                $(tblPDisplay).append($(minidiv));
+                
+            }
+        }
+    }
     var myFuncShowLocus = function(c) {
         var tblDisplay = document.getElementById("myTableLocus");
+        empty_tables(tblDisplay);
         var tblSDisplay = document.getElementById("myTableSeqs");
-        var tblPDisplay = document.getElementById("table_figure_options");
-
+        empty_tables(tblSDisplay);
+        
+        var canvas = document.getElementById("canvas");
+        canvas.innerText = "";
         var fileInput = document.getElementById('files');
 
         var file = fileInput.files[0];
@@ -69,15 +115,12 @@ jQuery(document).ready(function(){
                 container.addCustomColors(cs.colorsJson);
                 container.changeColorScheme('custom'); 
 
-                // esto para transformat el valor a variables
+                // esto para transformar el valor a variables
                 locus_array = JSON.parse(cts[0]['values'][0][0]);
                 //console.log(locus_array);
 
                 //Deleting rows from table
-                var rowCount = tblDisplay.rows.length;
-                for (var x=rowCount-1; x>0; x--) {
-                    tblDisplay.deleteRow(x);
-                }
+                empty_tables(tblDisplay);
 
                 //Inserting new rows
                 var i = 1;
@@ -90,7 +133,6 @@ jQuery(document).ready(function(){
                         var cell1 = row.insertCell(1);
                         var cell2 = row.insertCell(2);
 
-
                         var lab0 = document.createElement('label');
                         lab0.htmlFor = i;
                         lab0.appendChild(document.createTextNode(c));
@@ -98,7 +140,6 @@ jQuery(document).ready(function(){
                         var lab1 = document.createElement('label');
                         lab1.htmlFor = i;
                         lab1.appendChild(document.createTextNode(i-2));
-
 
                         var entr  = String(entry);
                         var entr0 = entr.split(",");
@@ -124,39 +165,7 @@ jQuery(document).ready(function(){
                 newYs    = profile_array['y'];
                 //console.log(newYs);
 
-                var profile_namess = newNames.sort();
-
-                //Deleting rows from table
-                $('#table_figure_options').html('');
-
-                for (var i = 0; i<profile_namess.length; i++) {
-                    var minidiv = document.createElement( "div" );
-                    $(minidiv).addClass('colors');
-                    
-                    var label = document.createElement('label');
-                    label.htmlFor = profile_namess[i];
-                    label.appendChild(document.createTextNode(profile_namess[i]));
-
-                    var check = document.createElement('input');
-                    check.type  = "checkbox";
-                    check.name  = profile_namess[i];
-                    check.value = profile_namess[i];
-                    check.id    = profile_namess[i];
-                    check.checked = true;
-
-                    var color = document.createElement('input');
-                    color.type  = "color";
-                    color.name  = profile_namess[i];
-                    color.value = "#00a2e8";
-                    color.id    = "c" + profile_namess[i];
-
-                    $(minidiv).append($(label));
-                    $(minidiv).append($(check));
-                    $(minidiv).append($(color));
-                    $("#table_figure_options").append($(minidiv));
-                    
-                }
-
+                plot_fig_options(newNames);
                 myFunctionPlot();
 
                 ///////////////////////////////////////////////////////////////
@@ -165,10 +174,7 @@ jQuery(document).ready(function(){
                 //console.log(locus_array);
 
                 //Deleting rows from table
-                var rowCount = tblSDisplay.rows.length;
-                for (var x=rowCount-1; x>=0; x--) {
-                    tblSDisplay.deleteRow(x);
-                }
+                empty_tables(tblSDisplay);
 
                 //Insert headers
                 var row = tblSDisplay.insertRow(0);
@@ -177,7 +183,6 @@ jQuery(document).ready(function(){
                 var cell1 = row.insertCell(1);
                 var cell2 = row.insertCell(2);
 
-
                 var lab0 = document.createElement('label');
                 lab0.htmlFor = i;
                 lab0.appendChild(document.createTextNode('I.D'));
@@ -185,7 +190,6 @@ jQuery(document).ready(function(){
                 var lab1 = document.createElement('label');
                 lab1.htmlFor = i;
                 lab1.appendChild(document.createTextNode('Index'));
-
 
                 var lab2 = document.createElement('label');
                 lab2.htmlFor = i;
@@ -216,7 +220,7 @@ jQuery(document).ready(function(){
                     k++;
                 }
 
-                //Inserting new rows
+                //Inserting new rows for sequences
                 var i = 1;
                 locus_array.forEach(function(entry) {
                         var row = tblSDisplay.insertRow(i);
@@ -226,7 +230,6 @@ jQuery(document).ready(function(){
                         var cell0 = row.insertCell(0);
                         var cell1 = row.insertCell(1);
                         var cell2 = row.insertCell(2);
-
 
                         var lab0 = document.createElement('label');
                         lab0.htmlFor = i;
@@ -291,10 +294,7 @@ jQuery(document).ready(function(){
         //var header = tableDisplayArea.createTHead();
 
         //Deleting rows from table
-        var rowCount = tableDisplayArea.rows.length;
-        for (var x=rowCount-1; x>0; x--) {
-            tableDisplayArea.deleteRow(x);
-        }
+        empty_tables(tableDisplayArea);
 
         //Removing Radio Buttons
         var myradios= document.getElementsByName('radiog0'); //Get all myradio elements from document
@@ -315,8 +315,6 @@ jQuery(document).ready(function(){
             var cell2 = row.insertCell(2);
 
             // Add some bold text in the new cell:
-            //cell.innerHTML = "<b>This is a table header</b>";
-
 
             var button = document.createElement('input');
             button.type= "button";
@@ -349,7 +347,7 @@ jQuery(document).ready(function(){
 
     $('#allcolors').on('input', function() {
         $('input:checked').each(function() {
-            console.log(this.id);
+            // console.log(this.id);
              $("#" + "c" + this.id).val($("#allcolors").val());
 
         });
@@ -396,30 +394,33 @@ var lineChartData = {
 
 }
 
-var newNames;
-var newX;
-var newYs;
 
+// need to be global
 var myLine=null;
+var newX=null;
+var newYs=null;
+var newNames=null;
 
 function myFunctionPlot(){
     if(myLine!=null){
         myLine.destroy();
     }
 
-    var canvas = document.getElementById("canvas");
-    var ctx = canvas.getContext("2d");
-    ctx.canvas.width = 10;
-    ctx.canvas.width = 10;
+    if (newX!=null){
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+        ctx.canvas.width = 10;
+        ctx.canvas.width = 10;
 
-    updateData(lineChartData, newX, newYs);
+        updateData(lineChartData);
 
-    myLine = new Chart(ctx).Line(lineChartData, {
-        responsive: true,
-        tooltipFontSize: 12,
-        multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
-        pointDot : false
-    });
+        myLine = new Chart(ctx).Line(lineChartData, {
+            responsive: true,
+            tooltipFontSize: 12,
+            multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
+            pointDot : false
+        });
+        }
 }
 
 
@@ -602,6 +603,7 @@ function myFunctionPlotUA(){
 <br>
 <p>Click on columns to sort sequences.</p>
 <br>
+<div id="seqs">
 <table  style="width:80%" align="center" id="myTableSeqs" class="sortable table">
     <tr>
     <td>I.D.</td>
@@ -609,5 +611,6 @@ function myFunctionPlotUA(){
     <td>Seqs:</td>
     </tr>
 </table>
+</div>
 
 </html>
