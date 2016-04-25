@@ -278,8 +278,9 @@ jQuery(document).ready(function(){
 
     // Load a db from a file
     fileInput.addEventListener('change', function(e) {
-        document.getElementById("uploadFile").value = this.value;
+        
         var file = fileInput.files[0];
+        document.getElementById("uploadFile").value = file["name"];
         var fileDisplayArea = document.getElementById('table');
         fileDisplayArea.innerText = ""
         var tableDisplayArea = document.getElementById("myTable");
