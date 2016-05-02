@@ -21,7 +21,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-colorSamples = [];
+colorSamples=[];
 // need to be global
 var myLine=null;
 var newX=null;
@@ -140,9 +140,12 @@ jQuery(document).ready(function(){
                 newNames = profile_array['names'];
                 newX     = profile_array['x'];
                 newYs    = profile_array['y'];
-                //console.log(newYs);
-                for (id in newNames){
-                    colorSamples[newNames[id]] = "rgba(151,187,205,1)";
+                if (colorSamples.length == 0){
+                    for (id in newNames){
+                        if (colorSamples[newNames[id]] == null){
+                            colorSamples[newNames[id]] = "rgba(151,187,205,1)";
+                        }
+                    }
                 }
                 //plot_fig_options(newNames);
                 myFunctionPlot();
@@ -460,7 +463,6 @@ var add_filter = function(){
             // console.log(sample.fontcolor(colorSamples[newNames[name]]))
         }
 
-        console.log(legend)
         tblPDisplay.innerHTML = legend;
         myFunctionPlot();
         
@@ -564,7 +566,7 @@ var add_filter = function(){
             <br>
 
         </div>
-        
+
         <div class="col-md-5">
             <h4>Secondary structure</h4>
             <div id="precursor_figure_options"></div>
