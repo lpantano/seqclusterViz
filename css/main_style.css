@@ -1,5 +1,5 @@
 body {
-     margin-left: 2%; 
+     margin-left: 3%; 
 }
 
 
@@ -20,10 +20,10 @@ canvas {
 }
 
 #figure {
-    width: 800px;
+    width: 700px;
     height: 300px;
-    padding: 2px;
-    margin: 2px;
+    padding: 4px;
+    margin: 4px;
 }
 
 

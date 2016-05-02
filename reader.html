@@ -21,6 +21,13 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
+colorSamples = [];
+// need to be global
+var myLine=null;
+var newX=null;
+var newYs=null;
+var newNames=null;
+
 jQuery(document).ready(function(){
 
     $("#changeallcolorButton").click(function() {
@@ -41,44 +48,14 @@ jQuery(document).ready(function(){
     }
 
 
-    var plot_fig_options = function(newNames){
-        //Deleting rows from table
-        
-        var tblPDisplay = document.getElementById("table_figure_options");
-       if (newNames!=null & tblPDisplay.innerText==""){
-            var profile_namess = newNames.sort();
-            for (var i = 0; i<profile_namess.length; i++) {
-                var minidiv = document.createElement( "div" );
-                $(minidiv).addClass('colors');
-                
-                var label = document.createElement('label');
-                label.htmlFor = profile_namess[i];
-                label.appendChild(document.createTextNode(profile_namess[i]));
 
-                var check = document.createElement('input');
-                check.type  = "checkbox";
-                check.name  = profile_namess[i];
-                check.value = profile_namess[i];
-                check.id    = profile_namess[i];
-                check.checked = true;
 
-                var color = document.createElement('input');
-                color.type  = "color";
-                color.name  = profile_namess[i];
-                color.value = "#00a2e8";
-                color.id    = "c" + profile_namess[i];
+    document.getElementById("but_add_filter").onclick = add_filter;
 
-                $(minidiv).append($(label));
-                $(minidiv).append($(check));
-                $(minidiv).append($(color));
-                $(tblPDisplay).append($(minidiv));
-                
-            }
-        }
-    }
     var myFuncShowLocus = function(c) {
         var tblDisplay = document.getElementById("myTableLocus");
         empty_tables(tblDisplay);
+
         var tblSDisplay = document.getElementById("myTableSeqs");
         empty_tables(tblSDisplay);
         
@@ -164,8 +141,10 @@ jQuery(document).ready(function(){
                 newX     = profile_array['x'];
                 newYs    = profile_array['y'];
                 //console.log(newYs);
-
-                plot_fig_options(newNames);
+                for (id in newNames){
+                    colorSamples[newNames[id]] = "rgba(151,187,205,1)";
+                }
+                //plot_fig_options(newNames);
                 myFunctionPlot();
 
                 ///////////////////////////////////////////////////////////////
@@ -281,64 +260,67 @@ jQuery(document).ready(function(){
         
         var file = fileInput.files[0];
         document.getElementById("uploadFile").value = file["name"];
+
         var fileDisplayArea = document.getElementById('table');
         fileDisplayArea.innerText = ""
+
         var tableDisplayArea = document.getElementById("myTable");
+
         var reader = new FileReader();
         reader.onload = function(e) {
-        var Uints = new Uint8Array(reader.result);
-        var db = new SQL.Database(Uints);
-        var contents = db.exec("SELECT Id, Description FROM clusters");
-        //console.log(contents);
+            var Uints = new Uint8Array(reader.result);
+            var db = new SQL.Database(Uints);
+            var contents = db.exec("SELECT Id, Description FROM clusters");
+            //console.log(contents);
 
-        // Create an empty <thead> element and add it to the table:
-        //var header = tableDisplayArea.createTHead();
+            // Create an empty <thead> element and add it to the table:
+            //var header = tableDisplayArea.createTHead();
 
-        //Deleting rows from table
-        empty_tables(tableDisplayArea);
+            //Deleting rows from table
+            empty_tables(tableDisplayArea);
 
-        //Removing Radio Buttons
-        var myradios= document.getElementsByName('radiog0'); //Get all myradio elements from document
+            //Removing Radio Buttons
+            var myradios= document.getElementsByName('radiog0'); //Get all myradio elements from document
 
-        for (var i = 0; i < myradios.length; i++) { //Loop all myradio elements
-            myradios[i].parentNode.removeChild(myradios[i]); //Removes the radio button
-        }
+            for (var i = 0; i < myradios.length; i++) { //Loop all myradio elements
+                myradios[i].parentNode.removeChild(myradios[i]); //Removes the radio button
+            }
 
-        var i = 1;
-        contents[0]['values'].sort().forEach(function(entry) {
-            // Create an empty <tr> element and add it to the first position of <thead>:
-            var row = tableDisplayArea.insertRow(i);
-            i++;
+            var i = 1;
+            contents[0]['values'].sort().forEach(function(entry) {
+                // Create an empty <tr> element and add it to the first position of <thead>:
+                var row = tableDisplayArea.insertRow(i);
+                i++;
 
-            // Insert a new cell (<td>) at the first position of the "new" <tr> element:
-            var cell0 = row.insertCell(0);
-            var cell1 = row.insertCell(1);
-            var cell2 = row.insertCell(2);
+                // Insert a new cell (<td>) at the first position of the "new" <tr> element:
+                var cell0 = row.insertCell(0);
+                var cell1 = row.insertCell(1);
+                var cell2 = row.insertCell(2);
 
-            // Add some bold text in the new cell:
+                // Add some bold text in the new cell:
 
-            var button = document.createElement('input');
-            button.type= "button";
-            button.value = ">>>";
-            button.className = "button-xsmall pure-button";
-            button.id = entry;
-            button.onclick =  function() { myFuncShowLocus(entry[0]);}
+                var button = document.createElement('input');
+                button.type= "button";
+                button.value = ">show more";
+                button.className = "button-xsmall pure-button";
+                button.id = entry;
+                button.onclick =  function() { myFuncShowLocus(entry[0]);}
 
-            var lab = document.createElement('label');
-            lab.htmlFor = entry;
-            lab.appendChild(document.createTextNode(entry[0]));
+                var lab = document.createElement('label');
+                lab.htmlFor = entry;
+                lab.appendChild(document.createTextNode(entry[0]));
 
-            var label = document.createElement('label');
-            label.htmlFor = entry;
-            label.appendChild(document.createTextNode(entry[1]));
+                var label = document.createElement('label');
+                label.htmlFor = entry;
+                label.appendChild(document.createTextNode(entry[1]));
 
-            cell0.appendChild(button);
-            cell1.appendChild(lab);
-            cell2.appendChild(label);
+                cell0.appendChild(button);
+                cell1.appendChild(lab);
+                cell2.appendChild(label);
 
-            //document.getElementById(entry).onclick = function() { myFuncShowLocus(entry);}
+                //document.getElementById(entry).onclick = function() { myFuncShowLocus(entry);}
 
-        });
+            });
 
         }
         reader.readAsArrayBuffer(file);
@@ -346,15 +328,6 @@ jQuery(document).ready(function(){
 
     });
 
-    $('#allcolors').on('input', function() {
-        $('input:checked').each(function() {
-            // console.log(this.id);
-             $("#" + "c" + this.id).val($("#allcolors").val());
-
-        });
-
-        myFunctionPlot();
-    } );
 
 });
 
@@ -396,13 +369,9 @@ var lineChartData = {
 }
 
 
-// need to be global
-var myLine=null;
-var newX=null;
-var newYs=null;
-var newNames=null;
 
 function myFunctionPlot(){
+
     if(myLine!=null){
         myLine.destroy();
     }
@@ -443,53 +412,59 @@ var updateData = function(oldData){
         }
 
 
-        for (var i = 0; i<newX.length; i++) {
+        for (var i = 0; i < newX.length; i++) {
             oldData["labels"].push(newX[i]);
         }
 
         for (var d = 0; d < newNames.length; d++) {
             var id = newNames.sort()[d];
-
             oldData["datasets"].push(
                 {
                     label: id,
                     fillColor : "rgba(151,187,205,0)",
-                    strokeColor : document.getElementById("c"+id).value,
+                    strokeColor : colorSamples[id],
                     data : []
                 }
             );
 
-            if (document.getElementById(id).checked) {
+            //if (document.getElementById(id).checked) {
                 for (var i = 0; i<newYs[id].length; i++) {
                     oldData["datasets"][d]["data"].push(newYs[id][i]);
                 }
-            }
+            //}
 
 
         }
+
 
 };
 
-
-function myFunctionPlotSA(){
-
-        for (var d = 0; d < newNames.length; d++) {
-            var id = newNames[d];
-
-            document.getElementById(id).checked = true;
+var add_filter = function(){
+    //Deleting rows from table
+    var tblPDisplay = document.getElementById("precursor_figure_output");
+    legend = " "
+    var inptRegExp = document.getElementById("regexp");
+    var colorObj = document.getElementById("allcolors");
+    regexp= inptRegExp.value;
+    color = colorObj.value;
+    var patt = new RegExp(regexp);
+    if (regexp!=null & inptRegExp!=""){
+        
+        for (name in newNames){
+            if (patt.test(newNames[name])){
+                //console.log(newNames[name]);
+                colorSamples[newNames[name]] = color;
+            }
+            var sample = newNames[name];
+            legend += sample.fontcolor(colorSamples[newNames[name]]) + " ";
+            // console.log(sample.fontcolor(colorSamples[newNames[name]]))
         }
 
-
-}
-
-
-function myFunctionPlotUA(){
-
-        for (var d = 0; d < newNames.length; d++) {
-            var id = newNames[d];
-
-            document.getElementById(id).checked = false;
-        }
+        console.log(legend)
+        tblPDisplay.innerHTML = legend;
+        myFunctionPlot();
+        
+    }
 }
 
 
@@ -517,31 +492,35 @@ function myFunctionPlotUA(){
 
 <br>
 <br>
-<div class="col-md-1">
-    <span class="title">Clusters Filter:</span>
-    <input class="form-control" name="filter" onkeyup="filter(this, 'myTable', 2)" type="text">
-    <span class="title">Clusters Id:</span>
-    <input class="form-control" name="filter" onkeyup="filter(this, 'myTable', 1)" type="text">
+<div class="row">
+    <div class="col-md-3">
+        <span class="title">Clusters Filter:</span>
+        <input class="form-control" name="filter" onkeyup="filter(this, 'myTable', 2)" type="text">
+    </div>
+    <div class="col-md-3">
+        <span class="title">Clusters Id:</span>
+        <input class="form-control" name="filter" onkeyup="filter(this, 'myTable', 1)" type="text">
+    </div>
 </div>
 
 <br>
-<div class="col-md-6">
-
-    <h4>Table with clusters</h4>
-    <br>
-    <div class="cluster_wrapper">
-        <div id="table"></div>
-            <table class="table" style="width:80%" align="center" id="myTable">
-            <tr>
-            <td>Sel.</td>
-            <td>I.D.</td>
-            <td>Description:</td>
-            </tr>
-            </table>
-        </div>
-    </div>
-
+<div class="row">
     <div class="row">
+        <div class="col-md-6">
+        <h4>Table with clusters</h4>
+        <br>
+            <div class="cluster_wrapper">
+                <div id="table"></div>
+                    <table class="table" style="width:80%" align="center" id="myTable">
+                    <tr>
+                    <td>Sel.</td>
+                    <td>I.D.</td>
+                    <td>Description:</td>
+                    </tr>
+                    </table>
+                </div>
+        </div>
+        <div class="col-md-1"></div>
         <div class="col-md-6">
             <h4>Table with Locus</h4>
             <br>
@@ -554,64 +533,70 @@ function myFunctionPlotUA(){
                 </tr>
                 </table>
             </div>
-            <br>
-            <h4>Secondary structure</h4>
-            <div id="precursor_figure_options"></div>
-            <br>
+            
         </div>
+    </div>
 
+    <div class="row">
+        
         <div class="col-md-6">
 
             <div class="row">
                 <h4 class="title">Abundance profile along precursor</h4>
                 <div id="figure">
-                    <canvas id="canvas" width="20" height="10" align="center"></canvas>
+                    <canvas id="canvas" width="15" height="10" align="center"></canvas>
                     <br>
                 </div>
             </div>
 
             <div class="row">
-                <div id="table_figure_options">
+                <div class="col-md-3">
+                    <input class="form-control" id="regexp" type="text" size="10" \> 
                 </div>
+                <div class="col-md-1">
+                    <input type="color" id="allcolors"/>
+                </div>
+                <div class="col-md-3">
+                    <button class="button-secondary pure-button" id="but_add_filter" \>Add filter</button>
+                </div>
+                    <div id="table_figure_options"></div>
             </div>
             <br>
-
-            <div class="row">
-                <input type="color" id="allcolors"/>
-                <button class="button-secondary pure-button" id="changeallcolorButton" >Change colors of selected samples!!!</button>
-            </div>
-            <br>
-
-            <div class="row">
-                <button class="button-secondary pure-button" onclick="myFunctionPlot()">Update Plot!!!</button>
-                <button class="button-secondary pure-button" onclick="myFunctionPlotSA()">Select All!!!</button>
-                <button class="button-secondary pure-button" onclick="myFunctionPlotUA()">Unselect All!!!</button>
-            </div>
 
         </div>
+        
+        <div class="col-md-5">
+            <h4>Secondary structure</h4>
+            <div id="precursor_figure_options"></div>
+            <br>
+        </div>
+
+
+    </div>
+    <div class="row">
+        <div id="precursor_figure_output">test</div>
     </div>
 </div>
-<br>
-<h4>Table with Sequences</h4>
 <br>
 <div class="row">
-    <div class="col-md-1">
-        <span class="title">Sequence filter:</span>
-        <input class="form-control" id="filtertext" name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text" >
+    <h4>Table with Sequences</h4>
+    <br>
+        <div class="col-md-1">
+            <span class="title">Sequence filter:</span>
+            <input class="form-control" id="filtertext" name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text" >
+        </div>
+
+    <br>
+    <p>Click on columns to sort sequences.</p>
+    <br>
+    <div id="seqs">
+    <table  style="width:80%" align="center" id="myTableSeqs" class="sortable table">
+        <tr>
+        <td>I.D.</td>
+        <td>Index</td>
+        <td>Seqs:</td>
+        </tr>
+    </table>
     </div>
 </div>
-
-<br>
-<p>Click on columns to sort sequences.</p>
-<br>
-<div id="seqs">
-<table  style="width:80%" align="center" id="myTableSeqs" class="sortable table">
-    <tr>
-    <td>I.D.</td>
-    <td>Index</td>
-    <td>Seqs:</td>
-    </tr>
-</table>
-</div>
-
 </html>
