@@ -5,5 +5,5 @@ Use `data/example.db` to test it!
 
 See video: https://youtu.be/Zjzte8n2-Sg
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/Zjzte8n2-Sg/0.jpg)](https://youtu.be/Zjzte8n2-Sg "Example")
+[![IMAGE ALT TEXT](http://i.makeagif.com/media/7-03-2016/M0GjW2.gif)](https://youtu.be/Zjzte8n2-Sg "Example")
 
