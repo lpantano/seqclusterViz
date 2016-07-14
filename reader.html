@@ -82,15 +82,17 @@ jQuery(document).ready(function(){
 
                 // show precursor structure
                 precursor_array = JSON.parse(cts[0]['values'][0][3]);
-                // console.log(precursor_array);
-                var container = new FornaContainer("#precursor_figure_options", {'applyForce': true, 'allowPanningAndZooming': true, "initialSize": [200,300]});
-        		var options = {'structure': precursor_array['structure'],
-                       		   'sequence':  precursor_array['seq']};
-                colorStr = precursor_array['colors'].join(" ");
-                container.addRNA(options.structure, options);
-                cs = ColorScheme(colorStr);
-                container.addCustomColors(cs.colorsJson);
-                container.changeColorScheme('custom'); 
+                if (precursor_array['structure'] != 0){
+                    var container = new FornaContainer("#precursor_figure_options", {'applyForce': true, 'allowPanningAndZooming': true, "initialSize": [200,300]});
+                    var options = {'structure': precursor_array['structure'],
+                                   'sequence':  precursor_array['seq']};
+                    colorStr = precursor_array['colors'].join(" ");
+                    container.addRNA(options.structure, options);
+                    cs = ColorScheme(colorStr);
+                    container.addCustomColors(cs.colorsJson);
+                    container.changeColorScheme('custom'); 
+
+                }
 
                 // esto para transformar el valor a variables
                 locus_array = JSON.parse(cts[0]['values'][0][0]);
