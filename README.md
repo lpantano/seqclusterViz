@@ -1,5 +1,6 @@
 # seqclusterViz
-visualization of seqcluster output
+
+visualization of [seqcluster output for small RNA data](https://github.com/lpantano/seqcluster)
 
 Use `data/example.db` to test it!
 
