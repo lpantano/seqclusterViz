@@ -11,7 +11,7 @@
 <script type="text/javascript" src="js/jquery-1.10.0.min.js"></script>
 <script type="text/javascript" src="js/read.js"></script>
 <script type="text/javascript" src="js/sql.js"></script>
-<script type="text/javascript" src="js/Chart.js"></script>
+<script type="text/javascript" src="js/Chart.min.js"></script>
 <script type="text/javascript" src="js/sortable.js"></script>
 <script type='text/javascript' src='js/d3.js'></script>
 <script type='text/javascript' src='js/fornac.js'></script>
@@ -22,6 +22,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 colorSamples=[];
+lineSamples=[];
 // need to be global
 var myLine=null;
 var newX=null;
@@ -51,6 +52,7 @@ jQuery(document).ready(function(){
 
 
     document.getElementById("but_add_filter").onclick = add_filter;
+    document.getElementById("but_change_line").onclick = change_line;
 
     var myFuncShowLocus = function(c) {
         var tblDisplay = document.getElementById("myTableLocus");
@@ -146,6 +148,7 @@ jQuery(document).ready(function(){
                     for (id in newNames){
                         if (colorSamples[newNames[id]] == null){
                             colorSamples[newNames[id]] = "rgba(151,187,205,1)";
+                            lineSamples[newNames[id]] = [0, 0];
                         }
                     }
                 }
@@ -355,21 +358,15 @@ function filter (term, _id, cellNr){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var lineChartData = {
-    labels : [],
-    datasets : [
-        {
-        label: "My First dataset",
-           fillColor : "rgba(220,220,220,0.2)",
-           strokeColor : "rgba(220,220,220,1)",
-           data : []
-        },
-        {
-        label: "My Second dataset",
-           fillColor : "rgba(151,187,205,0.2)",
-           strokeColor : "rgba(151,187,205,1)",
-           data : []
-        }
-    ]
+    type : 'line',
+    data: {labels: [], datasets : []},
+    options: {
+            responsive: true,
+            tooltipFontSize: 12,
+            multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
+            pointDot : false
+
+    }
 
 }
 
@@ -384,57 +381,55 @@ function myFunctionPlot(){
     if (newX!=null){
         var canvas = document.getElementById("canvas");
         var ctx = canvas.getContext("2d");
-        ctx.canvas.width = 10;
-        ctx.canvas.width = 10;
+        ctx.canvas.width = 15;
+        ctx.canvas.height = 10;
 
         updateData(lineChartData);
 
-        myLine = new Chart(ctx).Line(lineChartData, {
-            responsive: true,
-            tooltipFontSize: 12,
-            multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
-            pointDot : false
-        });
-        }
+        myLine = new Chart(ctx, lineChartData);
+    }
 }
 
 
 var updateData = function(oldData){
-
-        while (oldData["labels"].length > 0) {
-            oldData["labels"].pop();
+        while (oldData["data"]["labels"].length > 0) {
+            oldData["data"]["labels"].pop();
         }
 
-        for (var d = 0; d < oldData["datasets"].length; d++) {
-            while (oldData["datasets"][d]["data"].length > 0) {
-                oldData["datasets"][d]["data"].pop();
+        for (var d = 0; d < oldData["data"]["datasets"].length; d++) {
+            while (oldData["data"]["datasets"][d]["data"].length > 0) {
+                oldData["data"]["datasets"][d]["data"].pop();
             }
         }
 
 
-        while (oldData["datasets"].length > 0) {
-            oldData["datasets"].pop();
+        while (oldData["data"]["datasets"].length > 0) {
+            oldData["data"]["datasets"].pop();
         }
 
 
         for (var i = 0; i < newX.length; i++) {
-            oldData["labels"].push(newX[i]);
+            oldData["data"]["labels"].push(newX[i]);
         }
 
         for (var d = 0; d < newNames.length; d++) {
             var id = newNames.sort()[d];
-            oldData["datasets"].push(
+            oldData["data"]["datasets"].push(
                 {
                     label: id,
-                    fillColor : "rgba(151,187,205,0)",
-                    strokeColor : colorSamples[id],
+                    fillColor : "rgba(0,0,0,0)",
+                    borderColor : colorSamples[id],
+                    borderDash: lineSamples[id],
+                    borderWidth: 4,
+                    fill : false,
+                    pointStyle: 'line',
                     data : []
                 }
             );
 
             //if (document.getElementById(id).checked) {
                 for (var i = 0; i<newYs[id].length; i++) {
-                    oldData["datasets"][d]["data"].push(newYs[id][i]);
+                    oldData["data"]["datasets"][d]["data"].push(newYs[id][i]);
                 }
             //}
 
@@ -465,7 +460,36 @@ var add_filter = function(){
             // console.log(sample.fontcolor(colorSamples[newNames[name]]))
         }
 
-        tblPDisplay.innerHTML = legend;
+        myFunctionPlot();
+        
+    }
+}
+
+var change_line = function(){
+    //Deleting rows from table
+    var tblPDisplay = document.getElementById("precursor_figure_output");
+    legend = " "
+    var inptRegExp = document.getElementById("regexp");
+    regexp= inptRegExp.value;
+    var patt = new RegExp(regexp);
+    if (regexp!=null & inptRegExp!=""){
+        
+        for (name in newNames){
+            if (patt.test(newNames[name])){
+                console.log(lineSamples[newNames[name]][1]);
+                if (lineSamples[newNames[name]][1] == 0){
+                    lineSamples[newNames[name]] = [20, 20];
+                }else{
+                    lineSamples[newNames[name]] = [0, 0];
+                }
+                
+                legend += newNames[name] + " ";
+            }
+            var sample = newNames[name];
+            
+            // console.log(sample.fontcolor(colorSamples[newNames[name]]))
+        }
+
         myFunctionPlot();
         
     }
@@ -547,8 +571,8 @@ var add_filter = function(){
 
             <div class="row">
                 <h4 class="title">Abundance profile along precursor</h4>
-                <div id="figure">
-                    <canvas id="canvas" width="15" height="10" align="center"></canvas>
+                <div id="figure" width="15" height="50">
+                    <canvas id="canvas" width="15" height="50" align="center"></canvas>
                     <br>
                 </div>
             </div>
@@ -560,8 +584,11 @@ var add_filter = function(){
                 <div class="col-md-1">
                     <input type="color" id="allcolors"/>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <button class="button-secondary pure-button" id="but_add_filter" \>Add filter</button>
+                </div>
+                <div class="col-md-3">
+                    <button class="button-secondary pure-button" id="but_change_line" \>Change line</button>
                 </div>
                     <div id="table_figure_options"></div>
             </div>
