@@ -45,7 +45,7 @@ jQuery(document).ready(function(){
         var rowCount = t.rows.length;
         for (var x=rowCount-1; x>0; x--) {
             t.deleteRow(x);
-        }
+        }   
     }
 
 
@@ -95,15 +95,30 @@ jQuery(document).ready(function(){
                     container.changeColorScheme('custom'); 
 
                 }
+                ///////////////////////////////////////////////////////////////
+                profile_array = JSON.parse(cts[0]['values'][0][1]);
+                //console.log(profile_array);
 
-                // esto para transformar el valor a variables
+                //reading formatting for samples
+                newNames = profile_array['names'];
+                newX     = profile_array['x'];
+                newYs    = profile_array['y'];
+                if (colorSamples.length == 0){
+                    for (id in newNames){
+                        if (colorSamples[newNames[id]] == null){
+                            colorSamples[newNames[id]] = "rgba(151,187,205,1)";
+                            lineSamples[newNames[id]] = [0, 0];
+                        }
+                    }
+                }
+                // reading locus
                 locus_array = JSON.parse(cts[0]['values'][0][0]);
                 //console.log(locus_array);
 
                 //Deleting rows from table
                 empty_tables(tblDisplay);
-
-                //Inserting new rows
+                
+                //Inserting new rows in locus table
                 var i = 1;
                 locus_array.forEach(function(entry) {
                         var row = tblDisplay.insertRow(i);
@@ -135,35 +150,14 @@ jQuery(document).ready(function(){
 
                 });
 
-                ///////////////////////////////////////////////////////////////
-                // esto para transformat el valor a variables
-                profile_array = JSON.parse(cts[0]['values'][0][1]);
-                //console.log(profile_array);
-
-                //Global Variables
-                newNames = profile_array['names'];
-                newX     = profile_array['x'];
-                newYs    = profile_array['y'];
-                if (colorSamples.length == 0){
-                    for (id in newNames){
-                        if (colorSamples[newNames[id]] == null){
-                            colorSamples[newNames[id]] = "rgba(151,187,205,1)";
-                            lineSamples[newNames[id]] = [0, 0];
-                        }
-                    }
-                }
+                
                 //plot_fig_options(newNames);
                 myFunctionPlot();
 
-                ///////////////////////////////////////////////////////////////
-                // esto para transformat el valor a variables
-                locus_array = JSON.parse(cts[0]['values'][0][2]);
-                //console.log(locus_array);
-
-                //Deleting rows from table
+               //Deleting rows from table with sequences
                 empty_tables(tblSDisplay);
-
-                //Insert headers
+                tblSDisplay.deleteRow(0);
+                //Insert headers for tables with sequnces
                 var row = tblSDisplay.insertRow(0);
 
                 var cell0 = row.insertCell(0);
@@ -186,8 +180,9 @@ jQuery(document).ready(function(){
                 cell1.appendChild(lab1);
                 cell2.appendChild(lab2);
 
+                seqs_array = JSON.parse(cts[0]['values'][0][2]);
                 var arrKeys = [];
-                for (key in locus_array[0]['freq']) {
+                for (key in seqs_array[0]['freq']) {
                     arrKeys.push(key);
                 }
                 arrKeys = arrKeys.sort();
@@ -195,7 +190,7 @@ jQuery(document).ready(function(){
 
                 var k = 0;
                 for (var key in arrKeys) {
-                    //console.log(locus_array[0]['freq'][key])
+                    //console.log(seqs_array[0]['freq'][key])
                     var cell = row.insertCell(k+3);
 
                     var label = document.createElement('label');
@@ -209,7 +204,7 @@ jQuery(document).ready(function(){
 
                 //Inserting new rows for sequences
                 var i = 1;
-                locus_array.forEach(function(entry) {
+                seqs_array.forEach(function(entry) {
                         var row = tblSDisplay.insertRow(i);
                         i++;
 
@@ -476,7 +471,7 @@ var change_line = function(){
         
         for (name in newNames){
             if (patt.test(newNames[name])){
-                console.log(lineSamples[newNames[name]][1]);
+                // console.log(lineSamples[newNames[name]][1]);
                 if (lineSamples[newNames[name]][1] == 0){
                     lineSamples[newNames[name]] = [20, 20];
                 }else{
@@ -622,7 +617,10 @@ var change_line = function(){
     <br>
     <div id="seqs">
     <table  style="width:80%" align="center" id="myTableSeqs" class="sortable table">
-       
+        <tr>
+            <td>I.D.</td>
+            <td>Seqs</td>
+        </tr>    
     </table>
     </div>
 </div>
