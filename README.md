@@ -6,7 +6,7 @@ Visualization of small RNAseq data [![Project Status: Active - The project has r
 
 Pantano Rubino L, Chapman B, Kirchner R et al. Characterization of the small RNA transcriptome using the bcbio-nextgen python framework [version 1; not peer reviewed]. F1000Research 2016, 5(ISCB Comm J):1627 (slides) (doi: 10.7490/f1000research.1112526.1)
 
-[Visualization of the small RNA transcriptome using seqclusterViz](https://f1000research.com/posters/6-673) Poster at GLbio 2017
+Pantano L, Pantano Rubino F, Marti E and Ho Sui S. Visualization of the small RNA transcriptome using seqclusterViz [version 1; not peer reviewed]. F1000Research 2017, 6(ISCB Comm J):673 (poster) [doi: 10.7490/f1000research.1114055.1](https://f1000research.com/posters/6-673)
 
 **How to:**
 
