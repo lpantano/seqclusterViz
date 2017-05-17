@@ -1,6 +1,9 @@
 # seqclusterViz
 
-Visualization of small RNAseq data [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+Visualization of small RNAseq data 
+
+[![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![DOI](https://img.shields.io/badge/DOI-10.7490%2Ff1000research.1114055.1-lightgrey.svg?style=flat-square)](https://f1000research.com/posters/6-673)
 
 **cite:**
 
