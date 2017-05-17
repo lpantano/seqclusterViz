@@ -15,7 +15,7 @@ Pantano L, Pantano Rubino F, Marti E and Ho Sui S. Visualization of the small RN
 
 Visualization of [seqcluster output for small RNA data](https://github.com/lpantano/seqcluster). You can run seqcluster or bcbio-nextgen to get the output. With [bcbio-nextgen](https://bcbio-nextgen.readthedocs.io/en/latest/) the full analysis is much easier and you get plenty of other outputs. See an example of bcbio output [here](https://github.com/lpantano/small-RNA-analysis/tree/master/reanalysis_parkinson). This is the re-analysis of [small RNA from patients with Parkinson's disease](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE97285) published in [bioinformatics](https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btv632).
 
-Use `data/example.db` to test it!
+Download [this repo](https://github.com/lpantano/seqclusterViz/archive/master.zip), unzip it, open `reader.html` and use `data/example.db` to test it!
 
 See video: https://youtu.be/Zjzte8n2-Sg
 
