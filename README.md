@@ -6,7 +6,8 @@ Any question? chat here: [![chat](https://badges.gitter.im/Join%20Chat.svg)](htt
     
 [![Project Status: Active - The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![DOI](https://img.shields.io/badge/DOI-10.7490%2Ff1000research.1114055.1-lightgrey.svg?style=flat-square)](https://f1000research.com/posters/6-673)
-
+[![DOI](https://zenodo.org/badge/37931015.svg)](https://zenodo.org/badge/latestdoi/37931015)
+   
 **cite:**
 
 Pantano Rubino L, Chapman B, Kirchner R et al. Characterization of the small RNA transcriptome using the bcbio-nextgen python framework [version 1; not peer reviewed]. F1000Research 2016, 5(ISCB Comm J):1627 (slides) (doi: 10.7490/f1000research.1112526.1)
