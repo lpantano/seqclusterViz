@@ -42,7 +42,7 @@ jQuery(document).ready(function(){
     
     var fileDisplayArea = document.getElementById('table');
     var tableDisplayArea = document.getElementById("myTable");
-
+    var db = null;
     function read_sql(db){
             var contents = db.exec("SELECT Id, Description FROM clusters");
             //console.log(contents);
@@ -101,7 +101,7 @@ jQuery(document).ready(function(){
         var reader = new FileReader();
         reader.onload = function(e) {
             var Uints = new Uint8Array(reader.result);
-            var db = new SQL.Database(Uints);
+            db = new SQL.Database(Uints);
             read_sql(db)
         }
         reader.readAsArrayBuffer(file);
@@ -127,197 +127,184 @@ jQuery(document).ready(function(){
         
         var canvas = document.getElementById("canvas");
         canvas.innerText = "";
-        var fileInput = document.getElementById('files');
 
-        var file = fileInput.files[0];
-        console.log(file);
+        if (c > -1) {
+            ///////////////////////////////////////////////////////////////
+            var str = "SELECT Locus, Profile, Sequences, Precursor FROM clusters WHERE Id=" + c;
+            var cts = db.exec(str);
+            // console.log(cts[0]['values'][0][0]);
 
-        var reader1 = new FileReader();
-        reader1.onload = function(e) {
-            var Uints = new Uint8Array(reader1.result);
-            var db = new SQL.Database(Uints);
-
-            //var contents = db.exec("SELECT Id FROM clusters");
-            //console.log(contents);
-
-            if (c > -1) {
-                ///////////////////////////////////////////////////////////////
-                var str = "SELECT Locus, Profile, Sequences, Precursor FROM clusters WHERE Id=" + c;
-                var cts = db.exec(str);
-                // console.log(cts[0]['values'][0][0]);
-
-                // show precursor structure
-                precursor_array = JSON.parse(cts[0]['values'][0][3]);
-                if (precursor_array['structure'] != 0){
-                    var container = new FornaContainer("#precursor_figure_options", {'applyForce': true, 'allowPanningAndZooming': true, "initialSize": [200,300]});
-                    var options = {'structure': precursor_array['structure'],
-                                   'sequence':  precursor_array['seq']};
-                    colorStr = precursor_array['colors'].join(" ");
-                    container.addRNA(options.structure, options);
-                    cs = ColorScheme(colorStr);
-                    container.addCustomColors(cs.colorsJson);
-                    container.changeColorScheme('custom'); 
-
-                }
-                ///////////////////////////////////////////////////////////////
-                profile_array = JSON.parse(cts[0]['values'][0][1]);
-                //console.log(profile_array);
-
-                //reading formatting for samples
-                newNames = profile_array['names'];
-                newX     = profile_array['x'];
-                newYs    = profile_array['y'];
-                if (colorSamples.length == 0){
-                    for (id in newNames){
-                        if (colorSamples[newNames[id]] == null){
-                            colorSamples[newNames[id]] = "rgba(151,187,205,1)";
-                            lineSamples[newNames[id]] = [0, 0];
-                        }
-                    }
-                }
-                // reading locus
-                locus_array = JSON.parse(cts[0]['values'][0][0]);
-                //console.log(locus_array);
-
-                //Deleting rows from table
-                empty_tables(tblDisplay);
-                
-                //Inserting new rows in locus table
-                var i = 1;
-                locus_array.forEach(function(entry) {
-                        var row = tblDisplay.insertRow(i);
-                        i++;
-
-                        // Insert a new cell (<td>) at the first position of the "new" <tr> element:
-                        var cell0 = row.insertCell(0);
-                        var cell1 = row.insertCell(1);
-                        var cell2 = row.insertCell(2);
-
-                        var lab0 = document.createElement('label');
-                        lab0.htmlFor = i;
-                        lab0.appendChild(document.createTextNode(c));
-
-                        var lab1 = document.createElement('label');
-                        lab1.htmlFor = i;
-                        lab1.appendChild(document.createTextNode(i-2));
-
-                        var entr  = String(entry);
-                        var entr0 = entr.split(",");
-                        var entr1 = entr0[1] + ":" + entr0[2] + "-" + entr0[3];
-                        var lab2 = document.createElement('label');
-                        lab2.htmlFor = i;
-                        lab2.appendChild(document.createTextNode(entr1));
-
-                        cell0.appendChild(lab0);
-                        cell1.appendChild(lab1);
-                        cell2.appendChild(lab2);
-
-                });
-
-                
-                //plot_fig_options(newNames);
-                myFunctionPlot();
-
-               //Deleting rows from table with sequences
-                empty_tables(tblSDisplay);
-                tblSDisplay.deleteRow(0);
-                //Insert headers for tables with sequnces
-                var row = tblSDisplay.insertRow(0);
-
-                var cell0 = row.insertCell(0);
-                var cell1 = row.insertCell(1);
-                var cell2 = row.insertCell(2);
-
-                var lab0 = document.createElement('label');
-                lab0.htmlFor = i;
-                lab0.appendChild(document.createTextNode('I.D'));
-
-                var lab1 = document.createElement('label');
-                lab1.htmlFor = i;
-                lab1.appendChild(document.createTextNode('Index'));
-
-                var lab2 = document.createElement('label');
-                lab2.htmlFor = i;
-                lab2.appendChild(document.createTextNode('Seqs.'));
-
-                cell0.appendChild(lab0);
-                cell1.appendChild(lab1);
-                cell2.appendChild(lab2);
-
-                seqs_array = JSON.parse(cts[0]['values'][0][2]);
-                var arrKeys = [];
-                for (key in seqs_array[0]['freq']) {
-                    arrKeys.push(key);
-                }
-                arrKeys = arrKeys.sort();
-                //console.log(arrKeys);
-
-                var k = 0;
-                for (var key in arrKeys) {
-                    //console.log(seqs_array[0]['freq'][key])
-                    var cell = row.insertCell(k+3);
-
-                    var label = document.createElement('label');
-                    label.htmlFor = i;
-                    label.appendChild(document.createTextNode(arrKeys[key]));
-
-                    cell.appendChild(label);
-
-                    k++;
-                }
-
-                //Inserting new rows for sequences
-                var i = 1;
-                seqs_array.forEach(function(entry) {
-                        var row = tblSDisplay.insertRow(i);
-                        i++;
-
-                        // Insert a new cell (<td>) at the first position of the "new" <tr> element:
-                        var cell0 = row.insertCell(0);
-                        var cell1 = row.insertCell(1);
-                        var cell2 = row.insertCell(2);
-
-                        var lab0 = document.createElement('label');
-                        lab0.htmlFor = i;
-                        lab0.appendChild(document.createTextNode(c));
-
-                        var lab1 = document.createElement('label');
-                        lab1.htmlFor = i;
-                        lab1.appendChild(document.createTextNode(i-2));
-
-
-                        var lab2 = document.createElement('label');
-                        lab2.htmlFor = i;
-                        lab2.appendChild(document.createTextNode(entry['name']));
-
-                        cell0.appendChild(lab0);
-                        cell1.appendChild(lab1);
-                        cell2.appendChild(lab2);
-
-                        var k = 0;
-                        for (var key in arrKeys) {
-                            //console.log(entry['freq'][key])
-                            var cell = row.insertCell(k+3);
-
-                            var label = document.createElement('label');
-                            label.htmlFor = i;
-                            //label.appendChild(document.createTextNode(Math.round(entry['freq'][arrKeys[key]]*10)/10));
-                            label.appendChild(document.createTextNode(entry['freq'][arrKeys[key]]));
-
-                            cell.appendChild(label);
-
-                            k++;
-                        }
-
-
-                });
-
-                sortables_init();
+            // show precursor structure
+            precursor_array = JSON.parse(cts[0]['values'][0][3]);
+            if (precursor_array['structure'] != 0){
+                var container = new FornaContainer("#precursor_figure_options", {'applyForce': true, 'allowPanningAndZooming': true, "initialSize": [200,300]});
+                var options = {'structure': precursor_array['structure'],
+                               'sequence':  precursor_array['seq']};
+                colorStr = precursor_array['colors'].join(" ");
+                container.addRNA(options.structure, options);
+                cs = ColorScheme(colorStr);
+                container.addCustomColors(cs.colorsJson);
+                container.changeColorScheme('custom'); 
 
             }
+            ///////////////////////////////////////////////////////////////
+            profile_array = JSON.parse(cts[0]['values'][0][1]);
+            //console.log(profile_array);
+
+            //reading formatting for samples
+            newNames = profile_array['names'];
+            newX     = profile_array['x'];
+            newYs    = profile_array['y'];
+            if (colorSamples.length == 0){
+                for (id in newNames){
+                    if (colorSamples[newNames[id]] == null){
+                        colorSamples[newNames[id]] = "rgba(151,187,205,1)";
+                        lineSamples[newNames[id]] = [0, 0];
+                    }
+                }
+            }
+            // reading locus
+            locus_array = JSON.parse(cts[0]['values'][0][0]);
+            //console.log(locus_array);
+
+            //Deleting rows from table
+            empty_tables(tblDisplay);
+            
+            //Inserting new rows in locus table
+            var i = 1;
+            locus_array.forEach(function(entry) {
+                    var row = tblDisplay.insertRow(i);
+                    i++;
+
+                    // Insert a new cell (<td>) at the first position of the "new" <tr> element:
+                    var cell0 = row.insertCell(0);
+                    var cell1 = row.insertCell(1);
+                    var cell2 = row.insertCell(2);
+
+                    var lab0 = document.createElement('label');
+                    lab0.htmlFor = i;
+                    lab0.appendChild(document.createTextNode(c));
+
+                    var lab1 = document.createElement('label');
+                    lab1.htmlFor = i;
+                    lab1.appendChild(document.createTextNode(i-2));
+
+                    var entr  = String(entry);
+                    var entr0 = entr.split(",");
+                    var entr1 = entr0[1] + ":" + entr0[2] + "-" + entr0[3];
+                    var lab2 = document.createElement('label');
+                    lab2.htmlFor = i;
+                    lab2.appendChild(document.createTextNode(entr1));
+
+                    cell0.appendChild(lab0);
+                    cell1.appendChild(lab1);
+                    cell2.appendChild(lab2);
+
+            });
+
+            
+            //plot_fig_options(newNames);
+            myFunctionPlot();
+
+           //Deleting rows from table with sequences
+            empty_tables(tblSDisplay);
+            tblSDisplay.deleteRow(0);
+            //Insert headers for tables with sequnces
+            var row = tblSDisplay.insertRow(0);
+
+            var cell0 = row.insertCell(0);
+            var cell1 = row.insertCell(1);
+            var cell2 = row.insertCell(2);
+
+            var lab0 = document.createElement('label');
+            lab0.htmlFor = i;
+            lab0.appendChild(document.createTextNode('I.D'));
+
+            var lab1 = document.createElement('label');
+            lab1.htmlFor = i;
+            lab1.appendChild(document.createTextNode('Index'));
+
+            var lab2 = document.createElement('label');
+            lab2.htmlFor = i;
+            lab2.appendChild(document.createTextNode('Seqs.'));
+
+            cell0.appendChild(lab0);
+            cell1.appendChild(lab1);
+            cell2.appendChild(lab2);
+
+            seqs_array = JSON.parse(cts[0]['values'][0][2]);
+            var arrKeys = [];
+            for (key in seqs_array[0]['freq']) {
+                arrKeys.push(key);
+            }
+            arrKeys = arrKeys.sort();
+            //console.log(arrKeys);
+
+            var k = 0;
+            for (var key in arrKeys) {
+                //console.log(seqs_array[0]['freq'][key])
+                var cell = row.insertCell(k+3);
+
+                var label = document.createElement('label');
+                label.htmlFor = i;
+                label.appendChild(document.createTextNode(arrKeys[key]));
+
+                cell.appendChild(label);
+
+                k++;
+            }
+
+            //Inserting new rows for sequences
+            var i = 1;
+            seqs_array.forEach(function(entry) {
+                    var row = tblSDisplay.insertRow(i);
+                    i++;
+
+                    // Insert a new cell (<td>) at the first position of the "new" <tr> element:
+                    var cell0 = row.insertCell(0);
+                    var cell1 = row.insertCell(1);
+                    var cell2 = row.insertCell(2);
+
+                    var lab0 = document.createElement('label');
+                    lab0.htmlFor = i;
+                    lab0.appendChild(document.createTextNode(c));
+
+                    var lab1 = document.createElement('label');
+                    lab1.htmlFor = i;
+                    lab1.appendChild(document.createTextNode(i-2));
+
+
+                    var lab2 = document.createElement('label');
+                    lab2.htmlFor = i;
+                    lab2.appendChild(document.createTextNode(entry['name']));
+
+                    cell0.appendChild(lab0);
+                    cell1.appendChild(lab1);
+                    cell2.appendChild(lab2);
+
+                    var k = 0;
+                    for (var key in arrKeys) {
+                        //console.log(entry['freq'][key])
+                        var cell = row.insertCell(k+3);
+
+                        var label = document.createElement('label');
+                        label.htmlFor = i;
+                        //label.appendChild(document.createTextNode(Math.round(entry['freq'][arrKeys[key]]*10)/10));
+                        label.appendChild(document.createTextNode(entry['freq'][arrKeys[key]]));
+
+                        cell.appendChild(label);
+
+                        k++;
+                    }
+
+
+            });
+
+            sortables_init();
 
         }
-        reader1.readAsArrayBuffer(file);
+
+        
     }
     var file = null;
     var fileInput = document.getElementById('files');
@@ -331,7 +318,7 @@ jQuery(document).ready(function(){
 
         xhr.onload = function(e) {
             var uInt8Array = new Uint8Array(this.response);
-            var db = new SQL.Database(uInt8Array);
+            db = new SQL.Database(uInt8Array);
             read_sql(db);
         };
         xhr.send();
