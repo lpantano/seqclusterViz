@@ -34,12 +34,78 @@ jQuery(document).ready(function(){
     $("#changeallcolorButton").click(function() {
 
         $('input:checked').each(function() {
-            // console.log(this.id);
+
             $("#" + "c" + this.id).val($("#allcolors").val());
         
         });
     });
+    
+    var fileDisplayArea = document.getElementById('table');
+    var tableDisplayArea = document.getElementById("myTable");
 
+    function read_sql(db){
+            var contents = db.exec("SELECT Id, Description FROM clusters");
+            //console.log(contents);
+
+            // Create an empty <thead> element and add it to the table:
+            //var header = tableDisplayArea.createTHead();
+
+            //Deleting rows from table
+            empty_tables(tableDisplayArea);
+
+            //Removing Radio Buttons
+            var myradios= document.getElementsByName('radiog0'); //Get all myradio elements from document
+
+            for (var i = 0; i < myradios.length; i++) { //Loop all myradio elements
+                myradios[i].parentNode.removeChild(myradios[i]); //Removes the radio button
+            }
+
+            var i = 1;
+            contents[0]['values'].sort().forEach(function(entry) {
+                // Create an empty <tr> element and add it to the first position of <thead>:
+                var row = tableDisplayArea.insertRow(i);
+                i++;
+
+                // Insert a new cell (<td>) at the first position of the "new" <tr> element:
+                var cell0 = row.insertCell(0);
+                var cell1 = row.insertCell(1);
+                var cell2 = row.insertCell(2);
+
+                // Add some bold text in the new cell:
+
+                var button = document.createElement('input');
+                button.type= "button";
+                button.value = ">show more";
+                button.className = "button-xsmall pure-button";
+                button.id = entry;
+                button.onclick =  function() { myFuncShowLocus(entry[0]);}
+
+                var lab = document.createElement('label');
+                lab.htmlFor = entry;
+                lab.appendChild(document.createTextNode(entry[0]));
+
+                var label = document.createElement('label');
+                label.htmlFor = entry;
+                label.appendChild(document.createTextNode(entry[1]));
+
+                cell0.appendChild(button);
+                cell1.appendChild(lab);
+                cell2.appendChild(label);
+            });
+
+    }
+
+    function load_data_first(file){
+        fileDisplayArea.innerText = ""
+ 
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var Uints = new Uint8Array(reader.result);
+            var db = new SQL.Database(Uints);
+            read_sql(db)
+        }
+        reader.readAsArrayBuffer(file);
+    }
 
     var empty_tables = function(t){
         var rowCount = t.rows.length;
@@ -47,8 +113,6 @@ jQuery(document).ready(function(){
             t.deleteRow(x);
         }   
     }
-
-
 
 
     document.getElementById("but_add_filter").onclick = add_filter;
@@ -255,84 +319,39 @@ jQuery(document).ready(function(){
         }
         reader1.readAsArrayBuffer(file);
     }
-
+    var file = null;
     var fileInput = document.getElementById('files');
+    document.getElementById("uploadFile").value = "data/example.db"
+    
+    $( "#exbutton" ).click(function() {
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'data/example.db', true);
+        xhr.responseType = 'arraybuffer';
+
+        xhr.onload = function(e) {
+            var uInt8Array = new Uint8Array(this.response);
+            var db = new SQL.Database(uInt8Array);
+            read_sql(db);
+        };
+        xhr.send();
+        
+    });
 
     // Load a db from a file
     fileInput.addEventListener('change', function(e) {
         
-        var file = fileInput.files[0];
+        file = fileInput.files[0];
         document.getElementById("uploadFile").value = file["name"];
-
-        var fileDisplayArea = document.getElementById('table');
-        fileDisplayArea.innerText = ""
-
-        var tableDisplayArea = document.getElementById("myTable");
-
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var Uints = new Uint8Array(reader.result);
-            var db = new SQL.Database(Uints);
-            var contents = db.exec("SELECT Id, Description FROM clusters");
-            //console.log(contents);
-
-            // Create an empty <thead> element and add it to the table:
-            //var header = tableDisplayArea.createTHead();
-
-            //Deleting rows from table
-            empty_tables(tableDisplayArea);
-
-            //Removing Radio Buttons
-            var myradios= document.getElementsByName('radiog0'); //Get all myradio elements from document
-
-            for (var i = 0; i < myradios.length; i++) { //Loop all myradio elements
-                myradios[i].parentNode.removeChild(myradios[i]); //Removes the radio button
-            }
-
-            var i = 1;
-            contents[0]['values'].sort().forEach(function(entry) {
-                // Create an empty <tr> element and add it to the first position of <thead>:
-                var row = tableDisplayArea.insertRow(i);
-                i++;
-
-                // Insert a new cell (<td>) at the first position of the "new" <tr> element:
-                var cell0 = row.insertCell(0);
-                var cell1 = row.insertCell(1);
-                var cell2 = row.insertCell(2);
-
-                // Add some bold text in the new cell:
-
-                var button = document.createElement('input');
-                button.type= "button";
-                button.value = ">show more";
-                button.className = "button-xsmall pure-button";
-                button.id = entry;
-                button.onclick =  function() { myFuncShowLocus(entry[0]);}
-
-                var lab = document.createElement('label');
-                lab.htmlFor = entry;
-                lab.appendChild(document.createTextNode(entry[0]));
-
-                var label = document.createElement('label');
-                label.htmlFor = entry;
-                label.appendChild(document.createTextNode(entry[1]));
-
-                cell0.appendChild(button);
-                cell1.appendChild(lab);
-                cell2.appendChild(label);
-
-                //document.getElementById(entry).onclick = function() { myFuncShowLocus(entry);}
-
-            });
-
-        }
-        reader.readAsArrayBuffer(file);
-        // Prepare a statement
+        console.log(file.type)
+        load_data_first(file)
 
     });
 
 
 });
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -509,6 +528,9 @@ var change_line = function(){
                 </span>
             </span>
             <input type="text" class="form-control" id="uploadFile" readonly>
+        </div>
+        <div class="button-group">
+            <button type="button" class="btn btn-info" id="exbutton">Load Example</button>
         </div>
     </div>
 </div>
