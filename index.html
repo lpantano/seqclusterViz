@@ -311,11 +311,11 @@ jQuery(document).ready(function(){
         
     });
 
-    $( "#show_profile" ).click(function() {
+    over_profile =  function() {
         $('#popup_profile').bPopup();
         myLine.render();
-    });
-    $( "#show_ss" ).click(function() {
+    }
+    over_ss = function() {
         $('#popup_ss').bPopup();
         if (precursor_array['structure'] != 0){
                 var container = new FornaContainer("#precursor_figure_options", {'applyForce': true, 'allowPanningAndZooming': true, "initialSize": [200,300]});
@@ -328,10 +328,10 @@ jQuery(document).ready(function(){
                 container.changeColorScheme('custom'); 
 
             }
-    });
-    $( "#show_seqs" ).click(function() {
+    }
+    over_seqs = function() {
         $('#popup_seqs').bPopup();
-    });
+    }
 
 });
 
@@ -548,9 +548,9 @@ var change_line = function(){
             </table>
         </div>
         <div>
-            <button type="button" class="btn btn-info" id="show_profile">Show Profile</button>
-            <button type="button" class="btn btn-info" id="show_ss">Show Structure</button>
-            <button type="button" class="btn btn-info" id="show_seqs">Show Sequences</button>
+            <button onmouseover="over_profile()" type="button" class="btn btn-info" id="show_profile">Show Profile</button>
+            <button onmouseover="over_ss()" type="button" class="btn btn-info" id="show_ss">Show Structure</button>
+            <button onmouseover="over_seqs()" type="button" class="btn btn-info" id="show_seqs">Show Sequences</button>
         </div>
     </div>
 </div>
