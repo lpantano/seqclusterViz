@@ -2,7 +2,7 @@
 <head>
 
 <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-<title>clusters information</title>
+<title>smallRNA clusters visualization tool</title>
 <link rel="stylesheet" href="css/pure-min.css">
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/fornac.css" media="screen" />
@@ -16,6 +16,7 @@
 <script type='text/javascript' src='js/d3.js'></script>
 <script type='text/javascript' src='js/fornac.js'></script>
 <script type='text/javascript' src='js/rnagraph.js'></script>
+<script type='text/javascript' src='js/jquery.bpopup.min.js'></script>
 
 <script>
 
@@ -28,23 +29,22 @@ var myLine=null;
 var newX=null;
 var newYs=null;
 var newNames=null;
+var precursor_array = null;
+var db = null;
+var file = null;
+var genomic_positions = [];
 
 jQuery(document).ready(function(){
 
-    $("#changeallcolorButton").click(function() {
-
-        $('input:checked').each(function() {
-
-            $("#" + "c" + this.id).val($("#allcolors").val());
-        
-        });
-    });
-    
     var fileDisplayArea = document.getElementById('table');
     var tableDisplayArea = document.getElementById("myTable");
-    var db = null;
+    var fileInput = document.getElementById('files');
+    document.getElementById("uploadFile").value = "data/example.db"
+    document.getElementById("but_add_filter").onclick = add_filter;
+    document.getElementById("but_change_line").onclick = change_line;
+
     function read_sql(db){
-            var contents = db.exec("SELECT Id, Description FROM clusters");
+            var contents = db.exec("SELECT Id, Description, Locus FROM clusters");
             //console.log(contents);
 
             // Create an empty <thead> element and add it to the table:
@@ -63,6 +63,13 @@ jQuery(document).ready(function(){
             var i = 1;
             contents[0]['values'].sort().forEach(function(entry) {
                 // Create an empty <tr> element and add it to the first position of <thead>:
+                var locus_array = JSON.parse(entry[2]);
+                locus_array.forEach(function(pos) {
+                    loc = pos[1].split("_");
+                    genomic_positions.push([pos[0].toString(), loc[0], parseInt(loc[1]), parseInt(loc[2]), 1]);
+                });
+                //JSON.parse(entry[2]['values'][0][0]);
+
                 var row = tableDisplayArea.insertRow(i);
                 i++;
 
@@ -92,7 +99,6 @@ jQuery(document).ready(function(){
                 cell1.appendChild(lab);
                 cell2.appendChild(label);
             });
-
     }
 
     function load_data_first(file){
@@ -114,10 +120,6 @@ jQuery(document).ready(function(){
         }   
     }
 
-
-    document.getElementById("but_add_filter").onclick = add_filter;
-    document.getElementById("but_change_line").onclick = change_line;
-
     var myFuncShowLocus = function(c) {
         var tblDisplay = document.getElementById("myTableLocus");
         empty_tables(tblDisplay);
@@ -132,24 +134,11 @@ jQuery(document).ready(function(){
             ///////////////////////////////////////////////////////////////
             var str = "SELECT Locus, Profile, Sequences, Precursor FROM clusters WHERE Id=" + c;
             var cts = db.exec(str);
-            // console.log(cts[0]['values'][0][0]);
 
             // show precursor structure
             precursor_array = JSON.parse(cts[0]['values'][0][3]);
-            if (precursor_array['structure'] != 0){
-                var container = new FornaContainer("#precursor_figure_options", {'applyForce': true, 'allowPanningAndZooming': true, "initialSize": [200,300]});
-                var options = {'structure': precursor_array['structure'],
-                               'sequence':  precursor_array['seq']};
-                colorStr = precursor_array['colors'].join(" ");
-                container.addRNA(options.structure, options);
-                cs = ColorScheme(colorStr);
-                container.addCustomColors(cs.colorsJson);
-                container.changeColorScheme('custom'); 
-
-            }
-            ///////////////////////////////////////////////////////////////
+            
             profile_array = JSON.parse(cts[0]['values'][0][1]);
-            //console.log(profile_array);
 
             //reading formatting for samples
             newNames = profile_array['names'];
@@ -165,7 +154,6 @@ jQuery(document).ready(function(){
             }
             // reading locus
             locus_array = JSON.parse(cts[0]['values'][0][0]);
-            //console.log(locus_array);
 
             //Deleting rows from table
             empty_tables(tblDisplay);
@@ -302,14 +290,19 @@ jQuery(document).ready(function(){
 
             sortables_init();
 
-        }
-
-        
+        }      
     }
-    var file = null;
-    var fileInput = document.getElementById('files');
-    document.getElementById("uploadFile").value = "data/example.db"
     
+    // Load a db from a file
+    fileInput.addEventListener('change', function(e) {
+        
+        file = fileInput.files[0];
+        document.getElementById("uploadFile").value = file["name"];
+        console.log(file.type)
+        load_data_first(file)
+
+    });
+
     $( "#exbutton" ).click(function() {
 
         var xhr = new XMLHttpRequest();
@@ -325,38 +318,29 @@ jQuery(document).ready(function(){
         
     });
 
-    // Load a db from a file
-    fileInput.addEventListener('change', function(e) {
-        
-        file = fileInput.files[0];
-        document.getElementById("uploadFile").value = file["name"];
-        console.log(file.type)
-        load_data_first(file)
+    $( "#show_profile" ).click(function() {
+        $('#popup_profile').bPopup();
+        myLine.render();
+    });
+    $( "#show_ss" ).click(function() {
+        $('#popup_ss').bPopup();
+        if (precursor_array['structure'] != 0){
+                var container = new FornaContainer("#precursor_figure_options", {'applyForce': true, 'allowPanningAndZooming': true, "initialSize": [200,300]});
+                var options = {'structure': precursor_array['structure'],
+                               'sequence':  precursor_array['seq']};
+                colorStr = precursor_array['colors'].join(" ");
+                container.addRNA(options.structure, options);
+                cs = ColorScheme(colorStr);
+                container.addCustomColors(cs.colorsJson);
+                container.changeColorScheme('custom'); 
 
+            }
+    });
+    $( "#show_seqs" ).click(function() {
+        $('#popup_seqs').bPopup();
     });
 
-
 });
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-function filter (term, _id, cellNr){
-    var suche = term.value.toLowerCase();
-    var table = document.getElementById(_id);
-    var ele;
-    for (var r = 1; r < table.rows.length; r++){
-        ele = table.rows[r].cells[cellNr].innerHTML.replace(/<[^>]+>/g,"");
-        if (ele.toLowerCase().indexOf(suche)>=0 )
-            table.rows[r].style.display = '';
-        else table.rows[r].style.display = 'none';
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var lineChartData = {
     type : 'line',
@@ -371,6 +355,17 @@ var lineChartData = {
 
 }
 
+function filter (term, _id, cellNr){
+    var suche = term.value.toLowerCase();
+    var table = document.getElementById(_id);
+    var ele;
+    for (var r = 1; r < table.rows.length; r++){
+        ele = table.rows[r].cells[cellNr].innerHTML.replace(/<[^>]+>/g,"");
+        if (ele.toLowerCase().indexOf(suche)>=0 )
+            table.rows[r].style.display = '';
+        else table.rows[r].style.display = 'none';
+    }
+}
 
 
 function myFunctionPlot(){
@@ -436,8 +431,6 @@ var updateData = function(oldData){
 
 
         }
-
-
 };
 
 var add_filter = function(){
@@ -571,15 +564,21 @@ var change_line = function(){
 
     <div class="row">
         
-        <div class="col-md-6">
+        <button type="button" class="btn btn-info" id="show_profile">Show Profile</button>
+        <button type="button" class="btn btn-info" id="show_ss">Show Structure</button>
+        <button type="button" class="btn btn-info" id="show_seqs">Show Sequences</button>
 
+        <div id="popup_profile" class="init_hidden">
             <div class="row">
-                <h4 class="title">Abundance profile along precursor</h4>
-                <div id="figure" width="15" height="50">
-                    <canvas id="canvas" width="15" height="50" align="center"></canvas>
-                    <br>
+                
+                
+                    <h4 class="title">Abundance profile along precursor</h4>
+                    <div id="figure" width="15" height="50">
+                        <canvas id="canvas" width="15" height="50" align="center"></canvas>
+                        <br>
+                    </div>
                 </div>
-            </div>
+            
 
             <div class="row">
                 <div class="col-md-3">
@@ -597,40 +596,37 @@ var change_line = function(){
                     <div id="table_figure_options"></div>
             </div>
             <br>
-
         </div>
-
-        <div class="col-md-5">
-            <h4>Secondary structure</h4>
-            <div id="precursor_figure_options"></div>
-            <br>
+    
+        <div id="popup_ss" class="init_hidden">
+                <h4>Secondary structure</h4>
+                <div id="precursor_figure_options"></div>
+                <br>
         </div>
-
-
-    </div>
-    <div class="row">
-        <div id="precursor_figure_output">Select samples to change color.</div>
     </div>
 </div>
 <br>
-<div class="row">
-    <h4>Table with Sequences</h4>
-    <br>
-        <div class="col-md-1">
-            <span class="title">Sequence filter:</span>
-            <input class="form-control" id="filtertext" name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text" >
-        </div>
 
-    <br>
-    <p>Click on columns to sort sequences.</p>
-    <br>
-    <div id="seqs">
-    <table  style="width:80%" align="center" id="myTableSeqs" class="sortable table">
-        <tr>
-            <td>I.D.</td>
-            <td>Seqs</td>
-        </tr>    
-    </table>
+<div id="popup_seqs" class="init_hidden">
+    <div class="row">
+        <h4>Table with Sequences</h4>
+        <br>
+            <div class="col-md-1">
+                <span class="title">Sequence filter:</span>
+                <input class="form-control" id="filtertext" name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text" >
+            </div>
+
+        <br>
+        <p>Click on columns to sort sequences.</p>
+        <br>
+        <div id="seqs">
+        <table  style="width:80%" align="center" id="myTableSeqs" class="sortable table">
+            <tr>
+                <td>I.D.</td>
+                <td>Seqs</td>
+            </tr>    
+        </table>
+        </div>
     </div>
 </div>
 </html>

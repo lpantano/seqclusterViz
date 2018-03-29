@@ -78,3 +78,13 @@ display:block;
 .colors {
  float: left;   
 }
+
+.init_hidden {
+    display: none;
+    background: white;
+}
+
+#precursor_figure_options {
+    height: 500px;
+    width: 500px;
+}
