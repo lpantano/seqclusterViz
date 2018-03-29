@@ -45,10 +45,6 @@ jQuery(document).ready(function(){
 
     function read_sql(db){
             var contents = db.exec("SELECT Id, Description, Locus FROM clusters");
-            //console.log(contents);
-
-            // Create an empty <thead> element and add it to the table:
-            //var header = tableDisplayArea.createTHead();
 
             //Deleting rows from table
             empty_tables(tableDisplayArea);
@@ -131,7 +127,6 @@ jQuery(document).ready(function(){
         canvas.innerText = "";
 
         if (c > -1) {
-            ///////////////////////////////////////////////////////////////
             var str = "SELECT Locus, Profile, Sequences, Precursor FROM clusters WHERE Id=" + c;
             var cts = db.exec(str);
 
@@ -298,9 +293,7 @@ jQuery(document).ready(function(){
         
         file = fileInput.files[0];
         document.getElementById("uploadFile").value = file["name"];
-        console.log(file.type)
-        load_data_first(file)
-
+        load_data_first(file);
     });
 
     $( "#exbutton" ).click(function() {
@@ -352,7 +345,6 @@ var lineChartData = {
             pointDot : false
 
     }
-
 }
 
 function filter (term, _id, cellNr){
@@ -366,7 +358,6 @@ function filter (term, _id, cellNr){
         else table.rows[r].style.display = 'none';
     }
 }
-
 
 function myFunctionPlot(){
 
@@ -385,7 +376,6 @@ function myFunctionPlot(){
         myLine = new Chart(ctx, lineChartData);
     }
 }
-
 
 var updateData = function(oldData){
         while (oldData["data"]["labels"].length > 0) {
