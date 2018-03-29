@@ -497,7 +497,7 @@ var change_line = function(){
 <body id="main">
 
 <br>
-<div class="row">
+<div class="row" name="load_data">
 <!-- http://www.abeautifulsite.net/whipping-file-inputs-into-shape-with-bootstrap-3/ -->
     <div class="col-lg-3 col-sm-3 col-3">
 
@@ -516,96 +516,93 @@ var change_line = function(){
 </div>
 
 <br>
-<br>
-<div class="row">
-    <div class="col-md-3">
-        <span class="title">Clusters Filter:</span>
-        <input class="form-control" name="filter" onkeyup="filter(this, 'myTable', 2)" type="text">
-    </div>
-    <div class="col-md-3">
-        <span class="title">Clusters Id:</span>
-        <input class="form-control" name="filter" onkeyup="filter(this, 'myTable', 1)" type="text">
-    </div>
-</div>
 
-<br>
-<div class="row">
+<div class="row"  name="table_for_clusters">
     <div class="row">
-        <div class="col-md-6">
-        <h4>Table with clusters</h4>
-        <br>
-            <div class="cluster_wrapper">
-                <div id="table"></div>
-                    <table class="table" style="width:80%" align="center" id="myTable">
-                    <tr>
-                    <td>Sel.</td>
-                    <td>I.D.</td>
-                    <td>Description:</td>
-                    </tr>
-                    </table>
-                </div>
+        <div class="col-md-3">
+            <span class="title">Clusters Filter:</span>
+            <input class="form-control" name="filter" onkeyup="filter(this, 'myTable', 2)" type="text">
         </div>
-        <div class="col-md-1"></div>
-        <div class="col-md-6">
-            <h4>Table with Locus</h4>
-            <br>
-            <div id="locus">
-                <table  class="table" style="width:80%" align="center" id="myTableLocus">
+        <div class="col-md-3">
+            <span class="title">Clusters Id:</span>
+            <input class="form-control" name="filter" onkeyup="filter(this, 'myTable', 1)" type="text">
+        </div>
+    </div>
+
+    <br>
+    <div class="col-md-6">
+    <h4>Table with clusters</h4>
+    <br>
+        <div class="cluster_wrapper">
+            <div id="table"></div>
+                <table class="table" style="width:80%" align="center" id="myTable">
                 <tr>
+                <td>Sel.</td>
                 <td>I.D.</td>
-                <td>Index</td>
-                <td>Locus:</td>
+                <td>Description:</td>
                 </tr>
                 </table>
             </div>
-            
-        </div>
     </div>
-
-    <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-6">
+        <h4>Table with Locus</h4>
+        <br>
+        <div id="locus">
+            <table  class="table" style="width:80%" align="center" id="myTableLocus">
+            <tr>
+            <td>I.D.</td>
+            <td>Index</td>
+            <td>Locus:</td>
+            </tr>
+            </table>
+        </div>
         
-        <button type="button" class="btn btn-info" id="show_profile">Show Profile</button>
-        <button type="button" class="btn btn-info" id="show_ss">Show Structure</button>
-        <button type="button" class="btn btn-info" id="show_seqs">Show Sequences</button>
-
-        <div id="popup_profile" class="init_hidden">
-            <div class="row">
-                
-                
-                    <h4 class="title">Abundance profile along precursor</h4>
-                    <div id="figure" width="15" height="50">
-                        <canvas id="canvas" width="15" height="50" align="center"></canvas>
-                        <br>
-                    </div>
-                </div>
-            
-
-            <div class="row">
-                <div class="col-md-3">
-                    <input class="form-control" id="regexp" type="text" size="10" \> 
-                </div>
-                <div class="col-md-1">
-                    <input type="color" id="allcolors"/>
-                </div>
-                <div class="col-md-2">
-                    <button class="button-secondary pure-button" id="but_add_filter" \>Add filter</button>
-                </div>
-                <div class="col-md-3">
-                    <button class="button-secondary pure-button" id="but_change_line" \>Change line</button>
-                </div>
-                    <div id="table_figure_options"></div>
-            </div>
-            <br>
-        </div>
-    
-        <div id="popup_ss" class="init_hidden">
-                <h4>Secondary structure</h4>
-                <div id="precursor_figure_options"></div>
-                <br>
-        </div>
     </div>
 </div>
-<br>
+
+<div class="row" name="info_for_one_cluster">
+    
+    <button type="button" class="btn btn-info" id="show_profile">Show Profile</button>
+    <button type="button" class="btn btn-info" id="show_ss">Show Structure</button>
+    <button type="button" class="btn btn-info" id="show_seqs">Show Sequences</button>
+
+    <div id="popup_profile" class="init_hidden">
+        <div class="row">
+            
+            
+                <h4 class="title">Abundance profile along precursor</h4>
+                <div id="figure" width="15" height="50">
+                    <canvas id="canvas" width="15" height="50" align="center"></canvas>
+                    <br>
+                </div>
+            </div>
+        
+
+        <div class="row">
+            <div class="col-md-3">
+                <input class="form-control" id="regexp" type="text" size="10" \> 
+            </div>
+            <div class="col-md-1">
+                <input type="color" id="allcolors"/>
+            </div>
+            <div class="col-md-2">
+                <button class="button-secondary pure-button" id="but_add_filter" \>Add filter</button>
+            </div>
+            <div class="col-md-3">
+                <button class="button-secondary pure-button" id="but_change_line" \>Change line</button>
+            </div>
+                <div id="table_figure_options"></div>
+        </div>
+        <br>
+    </div>
+
+    <div id="popup_ss" class="init_hidden">
+            <h4>Secondary structure</h4>
+            <div id="precursor_figure_options"></div>
+            <br>
+    </div>
+</div>
 
 <div id="popup_seqs" class="init_hidden">
     <div class="row">
