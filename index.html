@@ -6,9 +6,11 @@
 <link rel="stylesheet" href="css/pure-min.css">
 <link rel="stylesheet" href="css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/fornac.css" media="screen" />
+<link rel="stylesheet" href="css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="css/main_style.css">
 
-<script type="text/javascript" src="js/jquery-1.10.0.min.js"></script>
+<script type="text/javascript" src="js/jquery-1.12.4.js"></script>
+<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="js/read.js"></script>
 <script type="text/javascript" src="js/sql.js"></script>
 <script type="text/javascript" src="js/Chart.min.js"></script>
@@ -75,17 +77,16 @@ jQuery(document).ready(function(){
       var ideogramAnnotations= [];
 
       sortedValues.forEach(function(entry){
-
+        console.log(entry[2])
         var locusArray = JSON.parse(entry[2]);
 
         locusArray.forEach(function(pos) {
-          var loc = pos[1].split("_");
 
           ideogramAnnotations.push({
             name: pos[0].toString(),
-            chr: loc[0],
-            start: parseInt(loc[1]),
-            stop: parseInt(loc[1])
+            chr: pos[1],
+            start: parseInt(pos[2]),
+            stop: parseInt(pos[3])
           });
 
         });
@@ -169,7 +170,31 @@ jQuery(document).ready(function(){
         var rowCount = t.rows.length;
         for (var x=rowCount-1; x>0; x--) {
             t.deleteRow(x);
-        }   
+        } 
+    }
+
+    function make_table_nice(){
+        // Setup - add a text input to each footer cell
+        $('#myTableSeqs tfoot th').each( function () {
+            var title = $(this).text();
+            $(this).html( '<input type="text" placeholder="Search '+title+'" />' );
+        } );
+     
+        // DataTable
+        var table = $('#myTableSeqs').DataTable();
+     
+        // Apply the search
+        table.columns().every( function () {
+            var that = this;
+     
+            $( 'input', this.footer() ).on( 'keyup change', function () {
+                if ( that.search() !== this.value ) {
+                    that
+                        .search( this.value )
+                        .draw();
+                }
+            } );
+        } );
     }
 
     var myFuncShowLocus = function(c) {
@@ -247,29 +272,20 @@ jQuery(document).ready(function(){
 
            //Deleting rows from table with sequences
             empty_tables(tblSDisplay);
-            tblSDisplay.deleteRow(0);
+            if (tblSDisplay.tHead){
+                tblSDisplay.deleteTHead();
+                tblSDisplay.deleteTFoot();
+                tblSDisplay.deleteTBody();
+            }
             //Insert headers for tables with sequnces
-            var row = tblSDisplay.insertRow(0);
 
-            var cell0 = row.insertCell(0);
-            var cell1 = row.insertCell(1);
-            var cell2 = row.insertCell(2);
+            var thead = tblSDisplay.createTHead();
+            var tfoot = tblSDisplay.createTFoot();
+            tr = document.createElement('tr');
 
-            var lab0 = document.createElement('label');
-            lab0.htmlFor = i;
-            lab0.appendChild(document.createTextNode('I.D'));
-
-            var lab1 = document.createElement('label');
-            lab1.htmlFor = i;
-            lab1.appendChild(document.createTextNode('Index'));
-
-            var lab2 = document.createElement('label');
-            lab2.htmlFor = i;
-            lab2.appendChild(document.createTextNode('Seqs.'));
-
-            cell0.appendChild(lab0);
-            cell1.appendChild(lab1);
-            cell2.appendChild(lab2);
+            th = document.createElement('th');
+            th.innerHTML = "Sequence";
+            tr.appendChild(th);
 
             seqs_array = JSON.parse(cts[0]['values'][0][2]);
             var arrKeys = [];
@@ -279,67 +295,36 @@ jQuery(document).ready(function(){
             arrKeys = arrKeys.sort();
             //console.log(arrKeys);
 
-            var k = 0;
             for (var key in arrKeys) {
                 //console.log(seqs_array[0]['freq'][key])
-                var cell = row.insertCell(k+3);
-
-                var label = document.createElement('label');
-                label.htmlFor = i;
-                label.appendChild(document.createTextNode(arrKeys[key]));
-
-                cell.appendChild(label);
-
-                k++;
+                th = document.createElement('th');
+                th.innerHTML = arrKeys[key];
+                tr.appendChild(th);
             }
-
+            thead.appendChild(tr);
+            tfoot.appendChild(tr.cloneNode(true));
             //Inserting new rows for sequences
-            var i = 1;
+            var tbody = tblSDisplay.createTBody();
             seqs_array.forEach(function(entry) {
-                    var row = tblSDisplay.insertRow(i);
-                    i++;
 
-                    // Insert a new cell (<td>) at the first position of the "new" <tr> element:
-                    var cell0 = row.insertCell(0);
-                    var cell1 = row.insertCell(1);
-                    var cell2 = row.insertCell(2);
+                    var tr = document.createElement('tr');
+                    
+                    th = document.createElement('td');
+                    th.innerHTML = entry['name'];
+                    tr.appendChild(th);
 
-                    var lab0 = document.createElement('label');
-                    lab0.htmlFor = i;
-                    lab0.appendChild(document.createTextNode(c));
-
-                    var lab1 = document.createElement('label');
-                    lab1.htmlFor = i;
-                    lab1.appendChild(document.createTextNode(i-2));
-
-
-                    var lab2 = document.createElement('label');
-                    lab2.htmlFor = i;
-                    lab2.appendChild(document.createTextNode(entry['name']));
-
-                    cell0.appendChild(lab0);
-                    cell1.appendChild(lab1);
-                    cell2.appendChild(lab2);
-
-                    var k = 0;
                     for (var key in arrKeys) {
                         //console.log(entry['freq'][key])
-                        var cell = row.insertCell(k+3);
+                        
+                        th = document.createElement('td');
+                        th.innerHTML = entry['freq'][arrKeys[key]];
+                        tr.appendChild(th);
 
-                        var label = document.createElement('label');
-                        label.htmlFor = i;
-                        //label.appendChild(document.createTextNode(Math.round(entry['freq'][arrKeys[key]]*10)/10));
-                        label.appendChild(document.createTextNode(entry['freq'][arrKeys[key]]));
-
-                        cell.appendChild(label);
-
-                        k++;
                     }
-
-
+                    tbody.appendChild(tr);
             });
 
-            sortables_init();
+            make_table_nice();
 
         }      
     }
@@ -566,8 +551,9 @@ var change_line = function(){
 
 <br>
 
-<div class="row" name="table_for_clusters">
-    <div class="row" id="cluster-and-ideogram-row">
+<div class="row" id="cluster-and-ideogram-row"></div>
+
+<div class="row" >
         <div class="col-md-3">
             <span class="title">Clusters Filter:</span>
             <input class="form-control" name="filter" onkeyup="filter(this, 'myTable', 2)" type="text">
@@ -576,15 +562,17 @@ var change_line = function(){
             <span class="title">Clusters Id:</span>
             <input class="form-control" name="filter" onkeyup="filter(this, 'myTable', 1)" type="text">
         </div>
-    </div>
+    
 
     <br>
+</div>
+<div class="row" >
     <div class="col-md-6">
     <h4>Table with clusters</h4>
     <br>
         <div class="cluster_wrapper">
             <div id="table"></div>
-                <table class="table" style="width:80%" align="center" id="myTable">
+                <table class="table" style="width:70%" align="center" id="myTable">
                 <tr>
                 <td>Sel.</td>
                 <td>I.D.</td>
@@ -593,7 +581,6 @@ var change_line = function(){
                 </table>
             </div>
     </div>
-    <div class="col-md-1"></div>
     <div class="col-md-6">
         <h4>Table with Locus</h4>
         <br>
@@ -609,15 +596,15 @@ var change_line = function(){
         <div>
             <button onmouseover="over_profile()" type="button" class="btn btn-info" id="show_profile">Show Profile</button>
             <button onmouseover="over_ss()" type="button" class="btn btn-info" id="show_ss">Show Structure</button>
-            <button onmouseover="over_seqs()" type="button" class="btn btn-info" id="show_seqs">Show Sequences</button>
+            <!-- <button onmouseover="over_seqs()" type="button" class="btn btn-info" id="show_seqs">Show Sequences</button> -->
         </div>
     </div>
 </div>
 
-<div class="row" name="info_for_one_cluster">
     
-    <div id="popup_profile" class="init_hidden">
-        <div class="row">
+<div id="popup_profile" class="init_hidden" width="25" height="60">
+    <div width="25" height="60">
+        <div width="25" height="60">
             
             
                 <h4 class="title">Abundance profile along precursor</h4>
@@ -625,7 +612,7 @@ var change_line = function(){
                     <canvas id="canvas" width="15" height="50" align="center"></canvas>
                     <br>
                 </div>
-            </div>
+        </div>
         
 
         <div class="row">
@@ -643,36 +630,20 @@ var change_line = function(){
             </div>
                 <div id="table_figure_options"></div>
         </div>
-        <br>
     </div>
-
-    <div id="popup_ss" class="init_hidden">
-            <h4>Secondary structure</h4>
-            <div id="precursor_figure_options"></div>
-            <br>
-    </div>
+    <br>
 </div>
 
-<div id="popup_seqs" class="init_hidden">
-    <div class="row">
-        <h4>Table with Sequences</h4>
+<div id="popup_ss" class="init_hidden">
+        <h4>Secondary structure</h4>
+        <div id="precursor_figure_options"></div>
         <br>
-            <div class="col-md-1">
-                <span class="title">Sequence filter:</span>
-                <input class="form-control" id="filtertext" name="filterSeqs" onkeyup="filter(this, 'myTableSeqs', 2)" type="text" >
-            </div>
+</div>
 
-        <br>
-        <p>Click on columns to sort sequences.</p>
-        <br>
-        <div id="seqs">
-        <table  style="width:80%" align="center" id="myTableSeqs" class="sortable table">
-            <tr>
-                <td>I.D.</td>
-                <td>Seqs</td>
-            </tr>    
+<div class="row">
+    <div id="seqs" width="60" height="60">
+        <table  style="width:80%" align="center" id="myTableSeqs" class="display"> 
         </table>
-        </div>
     </div>
 </div>
 </html>
