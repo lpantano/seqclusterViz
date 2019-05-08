@@ -36,10 +36,10 @@ jQuery(document).ready(function(){
         $('input:checked').each(function() {
 
             $("#" + "c" + this.id).val($("#allcolors").val());
-        
+
         });
     });
-    
+
     var fileDisplayArea = document.getElementById('table');
     var tableDisplayArea = document.getElementById("myTable");
     var db = null;
@@ -97,7 +97,7 @@ jQuery(document).ready(function(){
 
     function load_data_first(file){
         fileDisplayArea.innerText = ""
- 
+
         var reader = new FileReader();
         reader.onload = function(e) {
             var Uints = new Uint8Array(reader.result);
@@ -111,7 +111,7 @@ jQuery(document).ready(function(){
         var rowCount = t.rows.length;
         for (var x=rowCount-1; x>0; x--) {
             t.deleteRow(x);
-        }   
+        }
     }
 
 
@@ -124,7 +124,7 @@ jQuery(document).ready(function(){
 
         var tblSDisplay = document.getElementById("myTableSeqs");
         empty_tables(tblSDisplay);
-        
+
         var canvas = document.getElementById("canvas");
         canvas.innerText = "";
 
@@ -144,7 +144,7 @@ jQuery(document).ready(function(){
                 container.addRNA(options.structure, options);
                 cs = ColorScheme(colorStr);
                 container.addCustomColors(cs.colorsJson);
-                container.changeColorScheme('custom'); 
+                container.changeColorScheme('custom');
 
             }
             ///////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ jQuery(document).ready(function(){
 
             //Deleting rows from table
             empty_tables(tblDisplay);
-            
+
             //Inserting new rows in locus table
             var i = 1;
             locus_array.forEach(function(entry) {
@@ -202,7 +202,7 @@ jQuery(document).ready(function(){
 
             });
 
-            
+
             //plot_fig_options(newNames);
             myFunctionPlot();
 
@@ -304,12 +304,12 @@ jQuery(document).ready(function(){
 
         }
 
-        
+
     }
     var file = null;
     var fileInput = document.getElementById('files');
     document.getElementById("uploadFile").value = "data/example.db"
-    
+
     $( "#exbutton" ).click(function() {
 
         var xhr = new XMLHttpRequest();
@@ -322,12 +322,12 @@ jQuery(document).ready(function(){
             read_sql(db);
         };
         xhr.send();
-        
+
     });
 
     // Load a db from a file
     fileInput.addEventListener('change', function(e) {
-        
+
         file = fileInput.files[0];
         document.getElementById("uploadFile").value = file["name"];
         console.log(file.type)
@@ -457,7 +457,7 @@ var add_filter = function(){
     color = colorObj.value;
     var patt = new RegExp(regexp);
     if (regexp!=null & inptRegExp!=""){
-        
+
         for (name in newNames){
             if (patt.test(newNames[name])){
                 //console.log(newNames[name]);
@@ -469,7 +469,7 @@ var add_filter = function(){
         }
 
         myFunctionPlot();
-        
+
     }
 }
 
@@ -481,7 +481,7 @@ var change_line = function(){
     regexp= inptRegExp.value;
     var patt = new RegExp(regexp);
     if (regexp!=null & inptRegExp!=""){
-        
+
         for (name in newNames){
             if (patt.test(newNames[name])){
                 // console.log(lineSamples[newNames[name]][1]);
@@ -490,16 +490,16 @@ var change_line = function(){
                 }else{
                     lineSamples[newNames[name]] = [0, 0];
                 }
-                
+
                 legend += newNames[name] + " ";
             }
             var sample = newNames[name];
-            
+
             // console.log(sample.fontcolor(colorSamples[newNames[name]]))
         }
 
         myFunctionPlot();
-        
+
     }
 }
 
@@ -572,12 +572,12 @@ var change_line = function(){
                 </tr>
                 </table>
             </div>
-            
+
         </div>
     </div>
 
     <div class="row">
-        
+
         <div class="col-md-6">
 
             <div class="row">
@@ -590,7 +590,7 @@ var change_line = function(){
 
             <div class="row">
                 <div class="col-md-3">
-                    <input class="form-control" id="regexp" type="text" size="10" \> 
+                    <input class="form-control" id="regexp" type="text" size="10" \>
                 </div>
                 <div class="col-md-1">
                     <input type="color" id="allcolors"/>
@@ -629,6 +629,9 @@ var change_line = function(){
         </div>
 
     <br>
+    <br>
+    <br>
+    <br>
     <p>Click on columns to sort sequences.</p>
     <br>
     <div id="seqs">
@@ -636,7 +639,7 @@ var change_line = function(){
         <tr>
             <td>I.D.</td>
             <td>Seqs</td>
-        </tr>    
+        </tr>
     </table>
     </div>
 </div>
