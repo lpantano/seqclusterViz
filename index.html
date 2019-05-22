@@ -333,7 +333,7 @@ jQuery(document).ready(function(){
 
         file = fileInput.files[0];
         document.getElementById("uploadFile").value = file["name"];
-        console.log(file.type)
+        // console.log(file.type)
         load_data_first(file)
     });
 
@@ -366,8 +366,24 @@ var lineChartData = {
             responsive: true,
             tooltipFontSize: 12,
             multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
-            pointDot : false
-    }
+            pointDot : false,
+            scales: {
+        			xAxes: [{
+        				display: true,
+        				scaleLabel: {
+        					display: true,
+        					labelString: 'Position'
+        				}
+        			}],
+        			yAxes: [{
+        				display: true,
+        				scaleLabel: {
+        					display: true,
+        					labelString: 'normalized abundance'
+        				}
+        			}]
+        		}
+          }
 }
 
 // draw background
@@ -376,7 +392,7 @@ Chart.plugins.register({
     beforeDraw: function(c) {
         var ctx = c.chart.ctx;
         ctx.fillStyle = backgroundColor;
-        ctx.fillRect(0, 0, c.chart.width, c.chart.height);
+        ctx.fillRect(3, 3, c.chart.width, c.chart.height);
     }
 });
 
@@ -432,15 +448,11 @@ var updateData = function(oldData){
                 }
             );
 
-            //if (document.getElementById(id).checked) {
-                for (var i = 0; i<newYs[id].length; i++) {
-                    oldData["data"]["datasets"][d]["data"].push(newYs[id][i]);
-                }
-            //}
+            for (var i = 0; i<newYs[id].length; i++) {
+                oldData["data"]["datasets"][d]["data"].push(newYs[id][i]);
+            }
 
         }
-
-
 };
 
 var add_filter = function(){
