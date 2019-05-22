@@ -180,6 +180,7 @@ jQuery(document).ready(function(){
                     var cell0 = row.insertCell(0);
                     var cell1 = row.insertCell(1);
                     var cell2 = row.insertCell(2);
+                    var cell3 = row.insertCell(3);
 
                     var lab0 = document.createElement('label');
                     lab0.htmlFor = i;
@@ -191,14 +192,21 @@ jQuery(document).ready(function(){
 
                     var entr  = String(entry);
                     var entr0 = entr.split(",");
-                    var entr1 = entr0[1] + ":" + entr0[2] + "-" + entr0[3];
+                    var size = Number(entr0[3]) - Number(entr0[2]);
+                    var entr1 = entr0[1].replace(/_/g, " ");
                     var lab2 = document.createElement('label');
                     lab2.htmlFor = i;
                     lab2.appendChild(document.createTextNode(entr1));
-
+                    
+                    var lab3 = document.createElement('label');
+                    lab3.htmlFor = i;
+                    lab3.appendChild(document.createTextNode(size));
+                  
                     cell0.appendChild(lab0);
                     cell1.appendChild(lab1);
                     cell2.appendChild(lab2);
+                    cell3.appendChild(lab3);
+
 
             });
 
@@ -284,26 +292,22 @@ jQuery(document).ready(function(){
 
                     var k = 0;
                     for (var key in arrKeys) {
-                        //console.log(entry['freq'][key])
+                        //console.log(entry)
                         var cell = row.insertCell(k+3);
 
                         var label = document.createElement('label');
                         label.htmlFor = i;
                         //label.appendChild(document.createTextNode(Math.round(entry['freq'][arrKeys[key]]*10)/10));
-                        label.appendChild(document.createTextNode(entry['freq'][arrKeys[key]]));
+                        freq = Number((entry['freq'][arrKeys[key]]).toFixed(1))
+                        label.appendChild(document.createTextNode(freq));
 
                         cell.appendChild(label);
 
                         k++;
                     }
-
-
             });
-
             sortables_init();
-
         }
-
 
     }
     var file = null;
@@ -322,7 +326,6 @@ jQuery(document).ready(function(){
             read_sql(db);
         };
         xhr.send();
-
     });
 
     // Load a db from a file
@@ -332,9 +335,7 @@ jQuery(document).ready(function(){
         document.getElementById("uploadFile").value = file["name"];
         console.log(file.type)
         load_data_first(file)
-
     });
-
 
 });
 
@@ -366,9 +367,7 @@ var lineChartData = {
             tooltipFontSize: 12,
             multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
             pointDot : false
-
     }
-
 }
 
 // draw background
@@ -410,11 +409,9 @@ var updateData = function(oldData){
             }
         }
 
-
         while (oldData["data"]["datasets"].length > 0) {
             oldData["data"]["datasets"].pop();
         }
-
 
         for (var i = 0; i < newX.length; i++) {
             oldData["data"]["labels"].push(newX[i]);
@@ -440,7 +437,6 @@ var updateData = function(oldData){
                     oldData["data"]["datasets"][d]["data"].push(newYs[id][i]);
                 }
             //}
-
 
         }
 
@@ -568,7 +564,8 @@ var change_line = function(){
                 <tr>
                 <td>I.D.</td>
                 <td>Index</td>
-                <td>Locus:</td>
+                <td>Locus: chr start end</td>
+                <td>Size</td>
                 </tr>
                 </table>
             </div>
@@ -596,7 +593,7 @@ var change_line = function(){
                     <input type="color" id="allcolors"/>
                 </div>
                 <div class="col-md-2">
-                    <button class="button-secondary pure-button" id="but_add_filter" \>Add filter</button>
+                    <button class="button-secondary pure-button" id="but_add_filter" \>Change color</button>
                 </div>
                 <div class="col-md-3">
                     <button class="button-secondary pure-button" id="but_change_line" \>Change line</button>
@@ -616,7 +613,7 @@ var change_line = function(){
 
     </div>
     <div class="row">
-        <div id="precursor_figure_output">Select samples to change color.</div>
+        <div id="precursor_figure_output">Type a regular expression to match samples names to change color/line.</div>
     </div>
 </div>
 <br>
