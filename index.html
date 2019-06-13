@@ -193,7 +193,7 @@ jQuery(document).ready(function(){
                     var entr  = String(entry);
                     var entr0 = entr.split(",");
                     var size = Number(entr0[3]) - Number(entr0[2]);
-                    var entr1 = entr0[1].replace(/_/g, " ");
+                    var entr1 = entr0[1].replace(/_/g, " ") + ":" + entr0[2] + "-" + entr0[3];
                     var lab2 = document.createElement('label');
                     lab2.htmlFor = i;
                     lab2.appendChild(document.createTextNode(entr1));
